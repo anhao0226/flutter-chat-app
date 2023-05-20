@@ -16,4 +16,15 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 
-![avatar](https://github.com/anhao0226/flutter-chat-app/blob/master/1684573998250.jpg)
+<img src="https://github.com/anhao0226/flutter-chat-app/blob/master/1684573998250.jpg" width="200">
+
+<img src="https://github.com/anhao0226/flutter-chat-app/blob/master/1684574013791.jpg" width="200">   
+
+<img src="https://github.com/anhao0226/flutter-chat-app/blob/master/1684574020265.jpg" width="200">   
+
+<img src="https://github.com/anhao0226/flutter-chat-app/blob/master/1684574053116.jpg" width="200">   
+
+
+
+
+
