@@ -84,7 +84,6 @@ class NotificationService {
     });
   }
 
-  @pragma('vm:entry-point')
   static void onDidReceiveNotificationResponse(
       NotificationResponse notificationResponse) {
     _toChatDialog(notificationResponse);
@@ -92,12 +91,11 @@ class NotificationService {
 
   static void _toChatDialog(NotificationResponse notificationResponse) {
     var payload = jsonDecode(notificationResponse.payload!);
-    var client = WSClient.formServer(payload);
-    MyApp.navigatorKey.currentState?.pushReplacement(
-      CupertinoPageRoute(
-        builder: (context) => ChatDialogView(client: client),
-      ),
-    );
+
+    logger.i(payload);
+    var client = WSClient.formCache(payload);
+    MyApp.navigatorKey.currentState
+        ?.pushReplacementNamed(RouteName.chatDialogPage, arguments: client);
   }
 
   @pragma('vm:entry-point')
