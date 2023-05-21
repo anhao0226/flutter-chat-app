@@ -1,18 +1,9 @@
 // VoiceMessage
-import 'dart:io';
-import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:desktop_app/models/ws_message_model.dart';
-import 'package:desktop_app/utils/database.dart';
-import 'package:desktop_app/utils/dio_instance.dart';
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/views/chat_dialog/message_item_components/chat_message_item.dart';
-import 'package:desktop_app/views/chat_dialog/message_item_components/show_status_component.dart';
-import 'package:desktop_app/views/chat_dialog/theme.dart';
+import 'package:flutter_chat_app/models/ws_message_model.dart';
+import 'package:flutter_chat_app/views/chat_dialog/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'shap_component.dart';
 

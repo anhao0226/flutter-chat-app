@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:desktop_app/utils/iconfont.dart';
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/utils/initialization.dart';
-import 'package:desktop_app/utils/route.dart';
-import 'package:desktop_app/utils/websocket.dart';
+import 'package:flutter_chat_app/utils/iconfont.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/initialization.dart';
+import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/utils/websocket.dart';
 import 'package:flutter/material.dart';
 
 class StatusBarComponent extends StatefulWidget {

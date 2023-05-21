@@ -6,7 +6,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
-import 'package:desktop_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 

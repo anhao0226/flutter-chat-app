@@ -1,18 +1,18 @@
 import 'dart:io';
 
-import 'package:desktop_app/models/ws_client_model.dart';
-import 'package:desktop_app/models/ws_message_model.dart';
-import 'package:desktop_app/providers/ws_client_management.dart';
-import 'package:desktop_app/utils/database.dart';
-import 'package:desktop_app/utils/dio_instance.dart';
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/utils/initialization.dart';
-import 'package:desktop_app/utils/websocket.dart';
-import 'package:desktop_app/views/animations/fade_animation.dart';
-import 'package:desktop_app/views/client_list/avatar_component.dart';
-import 'package:desktop_app/views/client_list/shared_cleint_dialog.dart';
-import 'package:desktop_app/views/client_list/shared_err_bottom_sheet.dart';
-import 'package:desktop_app/views/common_components/wrapper.dart';
+import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/models/ws_message_model.dart';
+import 'package:flutter_chat_app/providers/ws_client_management.dart';
+import 'package:flutter_chat_app/utils/database.dart';
+import 'package:flutter_chat_app/utils/dio_instance.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/initialization.dart';
+import 'package:flutter_chat_app/utils/websocket.dart';
+import 'package:flutter_chat_app/views/animations/fade_animation.dart';
+import 'package:flutter_chat_app/views/client_list/avatar_component.dart';
+import 'package:flutter_chat_app/views/client_list/shared_cleint_dialog.dart';
+import 'package:flutter_chat_app/views/client_list/shared_err_bottom_sheet.dart';
+import 'package:flutter_chat_app/views/common_components/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

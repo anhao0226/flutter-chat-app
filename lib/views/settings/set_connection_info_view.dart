@@ -1,5 +1,9 @@
-import 'package:desktop_app/models/ws_client_model.dart';
-import 'package:desktop_app/utils/initialization.dart';
+import 'dart:io';
+
+import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/initialization.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../client_list/avatar_component.dart';
@@ -42,7 +46,7 @@ class _SetConnectionInfoViewState extends State<SetConnectionInfoView> {
     }
   }
 
-  void _handleNext() {
+  void _handleNext() async {
     if (_nicknameEditingController.text.isNotEmpty &&
         _hostEditingController.text.isNotEmpty &&
         _portEditingController.text.isNotEmpty) {

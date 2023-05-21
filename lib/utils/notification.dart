@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:desktop_app/main.dart';
-import 'package:desktop_app/models/ws_client_model.dart';
-import 'package:desktop_app/providers/chat_provider.dart';
-import 'package:desktop_app/utils/app_lifecycle.dart';
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/utils/route.dart';
-import 'package:desktop_app/views/chat_dialog/chat_dialog_view.dart';
-import 'package:desktop_app/views/request_permission_view.dart';
+import 'package:flutter_chat_app/main.dart';
+import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/providers/chat_provider.dart';
+import 'package:flutter_chat_app/utils/app_lifecycle.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/views/chat_dialog/chat_dialog_view.dart';
+import 'package:flutter_chat_app/views/request_permission_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';

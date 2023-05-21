@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:desktop_app/utils/dio_instance.dart';
+import 'package:flutter_chat_app/utils/dio_instance.dart';
 import 'package:flutter/material.dart';
 
 enum Status { loading, unread, hidden, error }

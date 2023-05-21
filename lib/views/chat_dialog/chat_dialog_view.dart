@@ -1,12 +1,12 @@
-import 'package:desktop_app/models/ws_client_model.dart';
-import 'package:desktop_app/models/ws_message_model.dart';
-import 'package:desktop_app/providers/ws_client_management.dart';
-import 'package:desktop_app/utils/initialization.dart';
-import 'package:desktop_app/providers/chat_provider.dart';
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/views/chat_dialog/input_bar_components/chat_input_bar_component.dart';
-import 'package:desktop_app/views/chat_dialog/status_bar_component.dart';
-import 'package:desktop_app/views/common_components/wrapper.dart';
+import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/models/ws_message_model.dart';
+import 'package:flutter_chat_app/providers/ws_client_management.dart';
+import 'package:flutter_chat_app/utils/initialization.dart';
+import 'package:flutter_chat_app/providers/chat_provider.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/views/chat_dialog/input_bar_components/chat_input_bar_component.dart';
+import 'package:flutter_chat_app/views/chat_dialog/status_bar_component.dart';
+import 'package:flutter_chat_app/views/common_components/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

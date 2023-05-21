@@ -1,5 +1,5 @@
-import 'package:desktop_app/providers/chat_provider.dart';
-import 'package:desktop_app/utils/index.dart';
+import 'package:flutter_chat_app/providers/chat_provider.dart';
+import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

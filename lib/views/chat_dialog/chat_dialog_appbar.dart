@@ -1,8 +1,8 @@
-import 'package:desktop_app/models/ws_client_model.dart';
-import 'package:desktop_app/providers/chat_provider.dart';
-import 'package:desktop_app/providers/multiple_select_notifier.dart';
-import 'package:desktop_app/utils/route.dart';
-import 'package:desktop_app/views/chat_dialog/actions_bottom_sheet.dart';
+import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/providers/chat_provider.dart';
+import 'package:flutter_chat_app/providers/multiple_select_notifier.dart';
+import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/views/chat_dialog/actions_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

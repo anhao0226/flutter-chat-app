@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:desktop_app/models/ws_message_model.dart';
+import 'package:flutter_chat_app/models/ws_message_model.dart';
 
 import 'initialization.dart';
 import 'index.dart';

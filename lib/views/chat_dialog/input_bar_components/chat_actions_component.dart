@@ -1,7 +1,7 @@
 import 'package:camera/camera.dart';
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/views/chat_dialog/take_picture_view.dart';
-import 'package:desktop_app/views/image_view.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/views/chat_dialog/take_picture_view.dart';
+import 'package:flutter_chat_app/views/image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 

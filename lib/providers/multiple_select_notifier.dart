@@ -1,4 +1,4 @@
-import 'package:desktop_app/models/ws_message_model.dart';
+import 'package:flutter_chat_app/models/ws_message_model.dart';
 import 'package:flutter/cupertino.dart';
 
 class MultipleSelectNotifier extends ValueNotifier<bool> {

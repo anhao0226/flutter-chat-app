@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:desktop_app/models/ws_client_model.dart';
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/utils/route.dart';
-import 'package:desktop_app/views/animations/fade_animation.dart';
-import 'package:desktop_app/views/client_list/avatar_component.dart';
-import 'package:desktop_app/views/client_list/my_home_page.dart';
-import 'package:desktop_app/views/common_components/wrapper.dart';
+import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/views/animations/fade_animation.dart';
+import 'package:flutter_chat_app/views/client_list/avatar_component.dart';
+import 'package:flutter_chat_app/views/client_list/my_home_page.dart';
+import 'package:flutter_chat_app/views/common_components/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

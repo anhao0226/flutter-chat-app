@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:desktop_app/models/ws_client_model.dart';
-import 'package:desktop_app/utils/index.dart';
+import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/utils/index.dart';
 import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
-import 'package:desktop_app/utils/initialization.dart';
+import 'package:flutter_chat_app/utils/initialization.dart';
 
 var dioInstance = Dio(BaseOptions(
   baseUrl: "http://${Initialization.address}",
@@ -114,9 +114,16 @@ class ServerIconData {
 }
 
 // fetchUsers
-Future<List<ServerIconData>> fetchIcons() async {
+Future<List<ServerIconData>> fetchIcons({
+  Dio? instance,
+}) async {
   try {
-    var response = await dioInstance.get("/file/icons");
+    late Response response;
+    if (instance != null) {
+      response = await instance.get("/file/icons");
+    } else {
+      response = await dioInstance.get("/file/icons");
+    }
     Map<String, dynamic> responseData = response.data;
     if (responseData["code"] == 200 && responseData["data"] is List) {
       var result = <ServerIconData>[];

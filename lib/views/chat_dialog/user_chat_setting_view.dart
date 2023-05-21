@@ -1,6 +1,6 @@
-import 'package:desktop_app/models/ws_client_model.dart';
-import 'package:desktop_app/providers/chat_provider.dart';
-import 'package:desktop_app/utils/database.dart';
+import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/providers/chat_provider.dart';
+import 'package:flutter_chat_app/utils/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

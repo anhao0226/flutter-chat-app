@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:desktop_app/models/ws_client_model.dart';
-import 'package:desktop_app/models/ws_message_model.dart';
-import 'package:desktop_app/utils/database.dart';
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/utils/initialization.dart';
+import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/models/ws_message_model.dart';
+import 'package:flutter_chat_app/utils/database.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/initialization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

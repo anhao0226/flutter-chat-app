@@ -2,8 +2,6 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:desktop_app/views/chat_dialog/chat_dialog_view.dart';
-import 'package:desktop_app/views/image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 

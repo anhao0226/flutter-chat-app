@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:desktop_app/models/ws_message_model.dart';
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/utils/initialization.dart';
+import 'package:flutter_chat_app/models/ws_message_model.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/initialization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:web_socket_channel/io.dart';
 import 'database.dart';

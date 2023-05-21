@@ -1,4 +1,4 @@
-import 'package:desktop_app/utils/route.dart';
+import 'package:flutter_chat_app/utils/route.dart';
 import 'package:flutter/material.dart';
 
 class SettingView extends StatefulWidget {

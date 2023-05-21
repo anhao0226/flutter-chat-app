@@ -2,16 +2,10 @@
 import 'dart:io';
 
 import 'package:animations/animations.dart';
-import 'package:desktop_app/models/ws_message_model.dart';
-import 'package:desktop_app/providers/chat_provider.dart';
-import 'package:desktop_app/utils/dio_instance.dart';
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/utils/network_image.dart';
-import 'package:desktop_app/utils/route.dart';
-import 'package:desktop_app/views/image_view.dart';
+import 'package:flutter_chat_app/models/ws_message_model.dart';
+import 'package:flutter_chat_app/utils/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:provider/provider.dart';
 
 class PictureMessageComponent extends StatefulWidget {
   const PictureMessageComponent({

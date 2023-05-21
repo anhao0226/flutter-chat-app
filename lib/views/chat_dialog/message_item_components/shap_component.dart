@@ -1,5 +1,5 @@
 // MessageWrap
-import 'package:desktop_app/views/chat_dialog/theme.dart';
+import 'package:flutter_chat_app/views/chat_dialog/theme.dart';
 import 'package:flutter/material.dart';
 
 class ShapeWrapComponent extends StatelessWidget {

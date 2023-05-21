@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:desktop_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/index.dart';
 
 typedef VoidCallback = Future<bool> Function(AppLifecycleState state);
 

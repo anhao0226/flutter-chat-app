@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/utils/initialization.dart';
-import 'package:desktop_app/utils/route.dart';
-import 'package:desktop_app/views/animations/fade_animation.dart';
-import 'package:desktop_app/views/common_components/wrapper.dart';
-import 'package:desktop_app/views/image_view.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/initialization.dart';
+import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/views/animations/fade_animation.dart';
+import 'package:flutter_chat_app/views/common_components/wrapper.dart';
+import 'package:flutter_chat_app/views/image_view.dart';
 import 'package:flutter/material.dart';
 
 enum TabItems { voice, image }

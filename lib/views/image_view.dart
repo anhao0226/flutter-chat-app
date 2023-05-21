@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:desktop_app/utils/initialization.dart';
+import 'package:flutter_chat_app/utils/initialization.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:record/record.dart';

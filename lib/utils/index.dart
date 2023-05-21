@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
-import 'package:desktop_app/models/ws_message_model.dart';
+import 'package:flutter_chat_app/models/ws_message_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart' as path;

@@ -1,8 +1,8 @@
-import 'package:desktop_app/providers/ws_client_management.dart';
-import 'package:desktop_app/utils/initialization.dart';
-import 'package:desktop_app/views/client_list/avatar_component.dart';
-import 'package:desktop_app/views/client_list/status_bar.dart';
-import 'package:desktop_app/views/common_components/wrapper.dart';
+import 'package:flutter_chat_app/providers/ws_client_management.dart';
+import 'package:flutter_chat_app/utils/initialization.dart';
+import 'package:flutter_chat_app/views/client_list/avatar_component.dart';
+import 'package:flutter_chat_app/views/client_list/status_bar.dart';
+import 'package:flutter_chat_app/views/common_components/wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
@@ -213,7 +213,6 @@ class _MyHomeViewState extends State<MyHomeView> {
 
   Widget _getCupertinoSlidingSegmentedControl() {
     var showDot = context.watch<HomeStateManagement>().showDot;
-
     return CupertinoSlidingSegmentedControl<Segment>(
       thumbColor: Colors.white,
       groupValue: _selectedSegment,

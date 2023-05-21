@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:desktop_app/utils/initialization.dart';
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/views/chat_dialog/input_bar_components/record_overlay_component.dart';
-import 'package:desktop_app/views/request_permission_view.dart';
+import 'package:flutter_chat_app/utils/initialization.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/views/chat_dialog/input_bar_components/record_overlay_component.dart';
+import 'package:flutter_chat_app/views/request_permission_view.dart';
 import 'package:flutter/material.dart';
 import 'package:record/record.dart';
 import 'package:uuid/uuid.dart';

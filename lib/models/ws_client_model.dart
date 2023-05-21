@@ -1,8 +1,7 @@
 // WebSocketClient
 
-import 'package:desktop_app/models/ws_message_model.dart';
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/utils/initialization.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/initialization.dart';
 
 import 'client_state.dart';
 

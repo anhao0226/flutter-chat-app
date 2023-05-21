@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:desktop_app/models/ws_client_model.dart';
-import 'package:desktop_app/utils/iconfont.dart';
+import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/utils/iconfont.dart';
 import 'package:badges/badges.dart' as badges;
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/utils/network_image.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/network_image.dart';
 import 'package:flutter/material.dart';
 
 class AvatarComponent extends StatelessWidget {

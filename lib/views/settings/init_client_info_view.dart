@@ -1,13 +1,13 @@
 import 'package:animations/animations.dart';
-import 'package:desktop_app/models/ws_client_model.dart';
-import 'package:desktop_app/utils/dio_instance.dart';
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/utils/initialization.dart';
-import 'package:desktop_app/utils/route.dart';
-import 'package:desktop_app/utils/websocket.dart';
-import 'package:desktop_app/views/common_components/wrapper.dart';
-import 'package:desktop_app/views/settings/select_avator_view.dart';
-import 'package:desktop_app/views/settings/set_connection_info_view.dart';
+import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/utils/dio_instance.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/initialization.dart';
+import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/utils/websocket.dart';
+import 'package:flutter_chat_app/views/common_components/wrapper.dart';
+import 'package:flutter_chat_app/views/settings/select_avator_view.dart';
+import 'package:flutter_chat_app/views/settings/set_connection_info_view.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +26,8 @@ class _InitClientInfoViewState extends State<InitClientInfoView> {
   String? _port;
   String? _nickname;
   bool _isLoading = false;
+
+  List<ServerIconData> _icons = [];
 
   void _toggleLoginStatus() {
     setState(() {
@@ -67,6 +69,39 @@ class _InitClientInfoViewState extends State<InitClientInfoView> {
     });
   }
 
+  void _handleNext(String nickname, String host, String port) {
+    setState(() => _isLoading = true);
+    FocusScope.of(context).unfocus();
+    var uri = Uri(scheme: "http", host: host, port: int.parse(port));
+    var instance = Dio(BaseOptions(baseUrl: uri.toString()));
+    fetchIcons(instance: instance).then((value) {
+      setState(() => _isLoading = false);
+      logger.i(value);
+      _host = host;
+      _port = port;
+      _nickname = nickname;
+      dioInstance = instance;
+      _icons = value;
+      setState(() => _isLoggedIn = !_isLoggedIn);
+    }).catchError((err) {
+      logger.e(err is DioError);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 3),
+          content: Text(err.toString()),
+          action: SnackBarAction(
+            label: "Close",
+            textColor: Colors.white,
+            onPressed: () {
+              ScaffoldMessenger.of(context).clearSnackBars();
+            },
+          ),
+        ),
+      );
+      setState(() => _isLoading = false);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,6 +109,7 @@ class _InitClientInfoViewState extends State<InitClientInfoView> {
       extendBodyBehindAppBar: true,
       // appBar: AppBar(title: const Text('Shared axis')),
       body: Wrapper(
+        bdColor: const Color.fromRGBO(0, 0, 0, 0.2),
         isLoading: _isLoading,
         child: SafeArea(
           child: Column(
@@ -95,6 +131,7 @@ class _InitClientInfoViewState extends State<InitClientInfoView> {
                   },
                   child: _isLoggedIn
                       ? PickerAvatarView(
+                          icons: _icons,
                           onNext: (String avatarUrl) {
                             _handleSubmit(avatarUrl);
                           },
@@ -102,16 +139,7 @@ class _InitClientInfoViewState extends State<InitClientInfoView> {
                             setState(() => _isLoggedIn = !_isLoggedIn);
                           },
                         )
-                      : SetConnectionInfoView(
-                          onNext: (nickname, host, port) {
-                            _host = host;
-                            _port = port;
-                            _nickname = nickname;
-                            dioInstance = Dio(
-                                BaseOptions(baseUrl: "http://$_host:$_port"));
-                            setState(() => _isLoggedIn = !_isLoggedIn);
-                          },
-                        ),
+                      : SetConnectionInfoView(onNext: _handleNext),
                 ),
               ),
             ],

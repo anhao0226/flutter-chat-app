@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:desktop_app/models/client_state.dart';
-import 'package:desktop_app/models/ws_client_model.dart';
-import 'package:desktop_app/utils/database.dart';
-import 'package:desktop_app/utils/dio_instance.dart';
-import 'package:desktop_app/utils/index.dart';
+import 'package:flutter_chat_app/models/client_state.dart';
+import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/utils/database.dart';
+import 'package:flutter_chat_app/utils/dio_instance.dart';
+import 'package:flutter_chat_app/utils/index.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';

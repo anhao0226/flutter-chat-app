@@ -3,15 +3,15 @@
 // found in the LICENSE file.
 
 import 'package:animations/animations.dart';
-import 'package:desktop_app/models/ws_client_model.dart';
-import 'package:desktop_app/utils/dio_instance.dart';
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/utils/initialization.dart';
-import 'package:desktop_app/utils/route.dart';
-import 'package:desktop_app/utils/websocket.dart';
-import 'package:desktop_app/views/common_components/wrapper.dart';
-import 'package:desktop_app/views/settings/select_avator_view.dart';
-import 'package:desktop_app/views/settings/set_connection_info_view.dart';
+import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/utils/dio_instance.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/initialization.dart';
+import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/utils/websocket.dart';
+import 'package:flutter_chat_app/views/common_components/wrapper.dart';
+import 'package:flutter_chat_app/views/settings/select_avator_view.dart';
+import 'package:flutter_chat_app/views/settings/set_connection_info_view.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -105,6 +105,7 @@ class _SharedAxisTransitionDemoState extends State<SharedAxisTransitionDemo> {
                   },
                   child: _isLoggedIn
                       ? PickerAvatarView(
+                    icons: [],
                           onNext: (String avatarUrl) {
                             _handleSubmit(avatarUrl);
                           },

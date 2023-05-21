@@ -1,37 +1,35 @@
-import 'package:desktop_app/utils/dio_instance.dart';
-import 'package:desktop_app/utils/index.dart';
-import 'package:desktop_app/views/common_components/wrapper.dart';
+import 'package:flutter_chat_app/utils/dio_instance.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/views/common_components/wrapper.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/iconfont.dart';
 
 class PickerAvatarView extends StatefulWidget {
-  const PickerAvatarView(
-      {super.key, required this.onNext, required this.onBack});
+  const PickerAvatarView({
+    super.key,
+    required this.onNext,
+    required this.onBack,
+    required this.icons,
+  });
 
   final Function(String avatarUrl) onNext;
   final VoidCallback onBack;
+  final List<ServerIconData> icons;
 
   @override
   State<StatefulWidget> createState() => _PickerAvatarViewState();
 }
 
 class _PickerAvatarViewState extends State<PickerAvatarView> {
-  List<ServerIconData> _icons = [];
   String _selectedAvatar = "";
   int _selectedIndex = -1;
 
   @override
   void initState() {
     super.initState();
-    _initData();
   }
 
-  void _initData() {
-    fetchIcons().then((value) {
-      setState(() => _icons = value);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +60,8 @@ class _PickerAvatarViewState extends State<PickerAvatarView> {
             itemBuilder: (context, index) {
               return InkWell(
                 onLongPress: () {
-                  setState((){
-                    _selectedAvatar = _icons[index].src;
+                  setState(() {
+                    _selectedAvatar = widget.icons[index].src;
                     _selectedIndex = index;
                   });
                 },
@@ -75,7 +73,7 @@ class _PickerAvatarViewState extends State<PickerAvatarView> {
                       child: SizedBox(
                         width: double.infinity,
                         child: Image.network(
-                          _icons[index].src,
+                          widget.icons[index].src,
                           fit: BoxFit.fitWidth,
                         ),
                       ),
@@ -107,7 +105,7 @@ class _PickerAvatarViewState extends State<PickerAvatarView> {
                 ),
               );
             },
-            itemCount: _icons.length,
+            itemCount: widget.icons.length,
           ),
         ),
       ),

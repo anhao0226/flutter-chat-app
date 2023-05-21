@@ -1,4 +1,4 @@
-import 'package:desktop_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter/material.dart';
 
 class StatusBarComponent extends StatefulWidget {
