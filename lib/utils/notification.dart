@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_chat_app/main.dart';
 import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/my_app.dart';
 import 'package:flutter_chat_app/providers/chat_provider.dart';
 import 'package:flutter_chat_app/utils/app_lifecycle.dart';
 import 'package:flutter_chat_app/utils/index.dart';

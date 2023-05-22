@@ -32,6 +32,9 @@ class RouteName {
 
   // picker user avatar
   static const String pickerAvatarPage = "/picker_avatar_page";
+
+  //
+  static const String notFoundPage = "/not_found_page";
 }
 
 class SlideRightRoute extends PageRouteBuilder {

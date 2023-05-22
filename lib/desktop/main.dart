@@ -10,6 +10,8 @@ class MyDesktopApp extends StatefulWidget {
 class _MyDesktopAppState extends State<MyDesktopApp> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return Scaffold(
+      appBar: AppBar(),
+    );
   }
 }

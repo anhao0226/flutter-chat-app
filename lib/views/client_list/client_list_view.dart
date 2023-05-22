@@ -1,6 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/my_app.dart';
 import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/utils/route.dart';
 import 'package:flutter_chat_app/views/animations/fade_animation.dart';
@@ -30,7 +29,7 @@ class _ClientListViewState extends State<ClientListView>
   @override
   void initState() {
     HomeStateManagement.instance.addListener(() {
-      if(!HomeStateManagement.instance.isMultipleSelectState){
+      if (!HomeStateManagement.instance.isMultipleSelectState) {
         setState(() => _selectedItems.clear());
       }
     });
@@ -39,7 +38,19 @@ class _ClientListViewState extends State<ClientListView>
 
   void _handleItemTap(WSClient client) {
     WSClientManagement.instance.enterChatStatus(client);
-    Navigator.pushNamed(context, RouteName.chatDialogPage, arguments: client);
+    var settings = MyRouteObserver.instance.currSetting!;
+    var arguments =
+        settings.arguments is WSClient ? settings.arguments as WSClient : null;
+    if (settings.name != RouteName.chatDialogPage ||
+        (arguments != null && arguments.uid != client.uid)) {
+      if (MyApp.navigatorKey.currentState!.canPop()) {
+        MyApp.navigatorKey.currentState!
+            .pushReplacementNamed(RouteName.chatDialogPage, arguments: client);
+      } else {
+        MyApp.navigatorKey.currentState
+            ?.pushNamed(RouteName.chatDialogPage, arguments: client);
+      }
+    }
   }
 
   void _handleItemLongPress(WSClient client) {

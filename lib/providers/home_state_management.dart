@@ -73,4 +73,11 @@ class HomeStateManagement extends ChangeNotifier {
     selectedItems.clear();
     notifyListeners();
   }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _instance = null;
+    super.dispose();
+  }
 }

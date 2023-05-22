@@ -1,5 +1,10 @@
+import 'package:flutter_chat_app/main.dart';
+import 'package:flutter_chat_app/my_app.dart';
+import 'package:flutter_chat_app/providers/chat_provider.dart';
 import 'package:flutter_chat_app/providers/ws_client_management.dart';
+import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/utils/initialization.dart';
+import 'package:flutter_chat_app/views/chat_dialog/chat_dialog_view.dart';
 import 'package:flutter_chat_app/views/client_list/avatar_component.dart';
 import 'package:flutter_chat_app/views/client_list/status_bar.dart';
 import 'package:flutter_chat_app/views/common_components/wrapper.dart';
@@ -93,7 +98,7 @@ class _MyHomeViewState extends State<MyHomeView> {
   }
 
   Future<bool> _handleSysBack() async {
-    if(HomeStateManagement.instance.selectedItems.isNotEmpty){
+    if (HomeStateManagement.instance.selectedItems.isNotEmpty) {
       HomeStateManagement.instance.currMultipleSelectState(false);
       return false;
     }
@@ -102,110 +107,121 @@ class _MyHomeViewState extends State<MyHomeView> {
 
   @override
   Widget build(BuildContext context) {
-    var selectedItems = context.watch<HomeStateManagement>().selectedItems;
     return WillPopScope(
       onWillPop: _handleSysBack,
-      child: Scaffold(
-        appBar: AppBar(
-          leadingWidth: kToolbarHeight + 14,
-          leading: Container(
+      child: _getClientList(),
+    );
+  }
+
+  Widget _getClientList() {
+    var selectedItems = context.watch<HomeStateManagement>().selectedItems;
+    return Scaffold(
+      appBar: AppBar(
+        leadingWidth: kToolbarHeight + 14,
+        leading: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.only(left: 14),
+          child: AnimatedCrossFade(
             alignment: Alignment.center,
-            padding: const EdgeInsets.only(left: 14),
-            child: AnimatedCrossFade(
-              alignment: Alignment.center,
-              crossFadeState: selectedItems.isEmpty
-                  ? CrossFadeState.showFirst
-                  : CrossFadeState.showSecond,
-              firstChild: SizedBox(
-                height: kToolbarHeight,
-                child: ValueListenableBuilder(
-                  valueListenable: WSUtil.instance.connectivity,
-                  builder: (context, value, child) {
-                    return Center(
-                      child: AvatarComponent(
-                        width: 36.0,
-                        height: 36.0,
-                        client: Initialization.client!,
-                        selected: false,
-                        online: value,
-                      ),
-                    );
-                  },
-                ),
-              ),
-              secondChild: Container(
-                height: kToolbarHeight,
-                alignment: Alignment.center,
-                child: IconButton(
-                  onPressed: () {
-                    HomeStateManagement.instance.currMultipleSelectState(false);
-                  },
-                  icon: const Icon(Iconfonts.close, size: 24),
-                ),
-              ),
-              duration: const Duration(milliseconds: 412),
-            ),
-          ),
-          centerTitle: true,
-          title: AnimatedCrossFade(
-            alignment: Alignment.center,
-            firstChild: const SizedBox(),
-            secondChild: Text("Selected ${selectedItems.length} items"),
             crossFadeState: selectedItems.isEmpty
                 ? CrossFadeState.showFirst
                 : CrossFadeState.showSecond,
+            firstChild: SizedBox(
+              height: kToolbarHeight,
+              child: ValueListenableBuilder(
+                valueListenable: WSUtil.instance.connectivity,
+                builder: (context, value, child) {
+                  return Center(
+                    child: AvatarComponent(
+                      width: 36.0,
+                      height: 36.0,
+                      client: Initialization.client!,
+                      selected: false,
+                      online: value,
+                    ),
+                  );
+                },
+              ),
+            ),
+            secondChild: Container(
+              height: kToolbarHeight,
+              alignment: Alignment.center,
+              child: IconButton(
+                onPressed: () {
+                  HomeStateManagement.instance.currMultipleSelectState(false);
+                },
+                icon: const Icon(Iconfonts.close, size: 24),
+              ),
+            ),
             duration: const Duration(milliseconds: 412),
           ),
-          actions: [
-            AnimatedCrossFade(
-              firstChild: IconButton(
-                onPressed: () =>
-                    Navigator.pushNamed(context, RouteName.settingPage),
-                icon: const Icon(Iconfonts.setting, size: 24),
-              ),
-              secondChild: IconButton(
-                onPressed: () => _showDeleteDialog(context),
-                icon: const Icon(Iconfonts.clear, size: 24),
-              ),
-              crossFadeState: selectedItems.isEmpty
-                  ? CrossFadeState.showFirst
-                  : CrossFadeState.showSecond,
-              duration: const Duration(milliseconds: 400),
+        ),
+        centerTitle: true,
+        title: AnimatedCrossFade(
+          alignment: Alignment.center,
+          firstChild: const SizedBox(),
+          secondChild: Text("Selected ${selectedItems.length} items"),
+          crossFadeState: selectedItems.isEmpty
+              ? CrossFadeState.showFirst
+              : CrossFadeState.showSecond,
+          duration: const Duration(milliseconds: 412),
+        ),
+        actions: [
+          AnimatedCrossFade(
+            firstChild: IconButton(
+              onPressed: () {
+                if (MyApp.navigatorKey.currentState!.canPop()) {
+                  MyApp.navigatorKey.currentState!
+                      .pushReplacementNamed(RouteName.settingPage);
+                } else {
+                  MyApp.navigatorKey.currentState
+                      ?.pushNamed(RouteName.settingPage);
+                }
+              },
+              icon: const Icon(Iconfonts.setting, size: 24),
             ),
-            const SizedBox(width: 10)
-          ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(76.0),
+            secondChild: IconButton(
+              onPressed: () => _showDeleteDialog(context),
+              icon: const Icon(Iconfonts.clear, size: 24),
+            ),
+            crossFadeState: selectedItems.isEmpty
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            duration: const Duration(milliseconds: 400),
+          ),
+          const SizedBox(width: 10)
+        ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(76.0),
+          child: Container(
+            height: 76.0,
+            alignment: Alignment.center,
             child: Container(
-              height: 76.0,
-              alignment: Alignment.center,
-              child: Container(
-                height: 66,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                width: double.infinity,
-                child: _getCupertinoSlidingSegmentedControl(),
-              ),
+              height: 66,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              width: double.infinity,
+              child: _getCupertinoSlidingSegmentedControl(),
             ),
           ),
         ),
-        body: Wrapper(
-          isLoading: false,
-          stack: [
-            ValueListenableBuilder(
-              valueListenable: WSUtil.instance.connectivity,
-              builder: (context, value, child) {
-                return StatusBarComponent(isOpen: value);
-              },
-            ),
-          ],
-          child: PageView(
-            controller: _pageController,
-            onPageChanged: _onPageChanged,
-            children: const [
-              ClientListView(segment: Segment.message),
-              ClientListView(segment: Segment.online),
-            ],
+      ),
+      body: Wrapper(
+        isLoading: false,
+        stack: [
+          ValueListenableBuilder(
+            valueListenable: WSUtil.instance.connectivity,
+            builder: (context, value, child) {
+              return StatusBarComponent(isOpen: value);
+            },
           ),
+        ],
+        child: PageView(
+          controller: _pageController,
+          onPageChanged: _onPageChanged,
+          children: const [
+            ClientListView(segment: Segment.message),
+            ClientListView(segment: Segment.online),
+          ],
         ),
       ),
     );

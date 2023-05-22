@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_chat_app/utils/initialization.dart';
@@ -37,8 +38,8 @@ class _RecordComponentViewState extends State<RecordComponentView> {
 
   @override
   void dispose() {
-    _record.dispose();
     super.dispose();
+    _record.onStateChanged();
   }
 
   @override
@@ -54,7 +55,10 @@ class _RecordComponentViewState extends State<RecordComponentView> {
       }
     });
 
-    _record.onStateChanged().listen(_handleStateChanged);
+    if (!Platform.isLinux) {
+       _record.onStateChanged().listen(_handleStateChanged);
+    }
+
     super.initState();
   }
 

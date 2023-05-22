@@ -14,6 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
 
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
 class Initialization {
   static String? _host;
   static String? _port;
@@ -78,31 +80,58 @@ class Initialization {
       _avatarDir.create(recursive: true);
     }
 
+    if (Platform.isLinux || Platform.isWindows) {
+      databaseFactory = databaseFactoryFfi;
+    }
+
     // Init database
     var databasesPath = await getDatabasesPath();
 
-    Hive.init(path.join(databasesPath, "client_cache"));
+    if (Platform.isLinux) {
+      sqfliteFfiInit();
+      _database = await databaseFactoryFfi.openDatabase(
+        inMemoryDatabasePath,
+        options: OpenDatabaseOptions(
+            version: 1,
+            onCreate: (Database db, int version) async {
+              await db.execute(
+                "CREATE TABLE Chats("
+                "id        INTEGER PRIMARY KEY,"
+                "text      TEXT,"
+                "receiver  VARCHAR(36),"
+                "sender    VARCHAR(36),"
+                "type      INT,"
+                "timestamp INTEGER,"
+                "filepath  VARCHAR(255),"
+                "extend    VARCHAR(255),"
+                "status    INT)",
+              );
+            }),
+      );
+    } else {
 
+      // sqlite
+      String filepath02 = path.join(databasesPath, "chat.db");
+      _database = await openDatabase(filepath02, version: 1,
+          onCreate: (Database db, int version) async {
+        await db.execute(
+          "CREATE TABLE Chats("
+          "id        INTEGER PRIMARY KEY,"
+          "text      TEXT,"
+          "receiver  VARCHAR(36),"
+          "sender    VARCHAR(36),"
+          "type      INT,"
+          "timestamp INTEGER,"
+          "filepath  VARCHAR(255),"
+          "extend    VARCHAR(255),"
+          "status    INT)",
+        );
+      });
+    }
+
+    Hive.init(path.join(databasesPath, "client_cache"));
     Hive.registerAdapter(ClientCacheAdapter());
     _clientCacheHive = await Hive.openLazyBox("client.hive");
-
-    // sqlite
-    String filepath02 = path.join(databasesPath, "chat.db");
-    _database = await openDatabase(filepath02, version: 1,
-        onCreate: (Database db, int version) async {
-      await db.execute(
-        "CREATE TABLE Chats("
-        "id        INTEGER PRIMARY KEY,"
-        "text      TEXT,"
-        "receiver  VARCHAR(36),"
-        "sender    VARCHAR(36),"
-        "type      INT,"
-        "timestamp INTEGER,"
-        "filepath  VARCHAR(255),"
-        "extend    VARCHAR(255),"
-        "status    INT)",
-      );
-    });
 
     // var sqlStr = "ALTER TABLE chats ADD COLUMN status int default 0";
     // _database.execute(sqlStr);
@@ -167,7 +196,6 @@ class Initialization {
     return _host != null && _port != null && _client != null;
   }
 }
-
 
 //
 class ClientCacheAdapter extends TypeAdapter<WSClient> {
