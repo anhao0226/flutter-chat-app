@@ -3,7 +3,6 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  audioplayers_windows
   connectivity_plus
   network_info_plus
   permission_handler_windows

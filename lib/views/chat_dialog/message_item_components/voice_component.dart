@@ -1,10 +1,11 @@
 // VoiceMessage
 
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_chat_app/models/ws_message_model.dart';
+import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/views/chat_dialog/theme.dart';
 import 'package:flutter/material.dart';
-
+import 'package:just_audio/just_audio.dart';
 import 'shap_component.dart';
 
 class VoiceMessageComponent extends StatefulWidget {
@@ -42,12 +43,26 @@ class _VoiceMessageComponentState extends State<VoiceMessageComponent> {
         widget.message.extend!.containsKey("duration")) {
       double duration = widget.message.extend!['duration'] * 1000;
       _duration = Duration(milliseconds: duration.toInt());
-      double boxWidth = _duration.inSeconds * 10;
+      double boxWidth = _duration.inMilliseconds / 100;
       _boxWidth = boxWidth > _boxMinWidth ? boxWidth : _boxMinWidth;
     }
-    _player.onPlayerStateChanged.listen((event) {
-      if (event == PlayerState.completed) {
-        setState(() => {_isPlaying = false});
+    _player.playerStateStream.listen((state) {
+      switch(state.processingState) {
+        case ProcessingState.idle:
+          logger.i("idle");
+          break;
+        case ProcessingState.loading:
+          logger.i("loading");
+          break;
+        case ProcessingState.buffering:
+          logger.i("buffering");
+          break;
+        case ProcessingState.ready:
+          logger.i("ready");
+          break;
+        case ProcessingState.completed:
+          setState(() => {_isPlaying = false});
+          break;
       }
     });
 
@@ -56,7 +71,7 @@ class _VoiceMessageComponentState extends State<VoiceMessageComponent> {
 
   @override
   void dispose() {
-    _player.release();
+    _player.dispose();
     super.dispose();
   }
 
@@ -65,9 +80,13 @@ class _VoiceMessageComponentState extends State<VoiceMessageComponent> {
     if (_isPlaying) {
       await _player.stop();
     } else {
-      await _player.play(DeviceFileSource(widget.message.filepath!));
+      await _player.setFilePath(widget.message.filepath!);
+      setState(() {
+        _isPlaying = true;
+        _duration = _player.duration!;
+      });
+      await _player.play();
     }
-    setState(() => _isPlaying = !_isPlaying);
     widget.onPress();
   }
 
@@ -121,17 +140,20 @@ class _VoiceMessageComponentState extends State<VoiceMessageComponent> {
   }
 
   Widget _buildProcessBar() {
-    return AnimatedOpacity(
-      opacity: _isPlaying ? 1 : 0,
-      duration: const Duration(milliseconds: 300),
-      child: AnimatedSize(
-        duration: _duration,
-        child: Container(
-          height: 36,
-          width: _isPlaying ? _boxWidth : 0,
-          color: widget.theme.processBarColor,
-        ),
+    return AnimatedSize(
+      duration: _duration,
+      reverseDuration: Duration.zero,
+      child: Container(
+        height: 36,
+        width: _isPlaying ? _boxWidth : 0,
+        color: widget.theme.processBarColor,
       ),
     );
+
+    //   AnimatedOpacity(
+    //   opacity: _isPlaying ? 1 : 0,
+    //   duration: const Duration(milliseconds: 300),
+    //   child:
+    // );
   }
 }
