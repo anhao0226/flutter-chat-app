@@ -23,6 +23,7 @@ class Initialization {
   static late Directory _voiceSaveDir;
   static late Directory _pictureSaveDir;
   static late Directory _avatarDir;
+  static late Directory _unknownFileDir;
   static late Directory _temporaryDir;
   static late Directory _appDocumentsDir;
   static late SharedPreferences _prefs;
@@ -39,6 +40,7 @@ class Initialization {
 
   static SharedPreferences get prefs => _prefs;
 
+  //
   static Directory get temporaryDir => _temporaryDir;
 
   static Directory get appDocumentsDir => _appDocumentsDir;
@@ -48,6 +50,10 @@ class Initialization {
   static Directory get pictureSaveDir => _pictureSaveDir;
 
   static Directory get avatarDir => _avatarDir;
+
+  static Directory get unknownFileDir => _unknownFileDir;
+
+  //
 
   static Database get database => _database;
 
@@ -80,6 +86,11 @@ class Initialization {
       _avatarDir.create(recursive: true);
     }
 
+    _unknownFileDir = Directory("${_appDocumentsDir.path}/others");
+    if (!await _unknownFileDir.exists()) {
+      _unknownFileDir.create(recursive: true);
+    }
+
     if (Platform.isLinux || Platform.isWindows) {
       databaseFactory = databaseFactoryFfi;
     }
@@ -109,7 +120,6 @@ class Initialization {
             }),
       );
     } else {
-
       // sqlite
       String filepath02 = path.join(databasesPath, "chat.db");
       _database = await openDatabase(filepath02, version: 1,

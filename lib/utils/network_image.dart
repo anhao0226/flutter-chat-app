@@ -10,8 +10,8 @@ import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
-class CacheNetworkImage extends ImageProvider<CacheNetworkImage> {
-  const CacheNetworkImage(this.url, this.file,
+class CustomNetworkImage extends ImageProvider<CustomNetworkImage> {
+  const CustomNetworkImage(this.url, this.file,
       {this.scale = 1.0, this.headers});
 
   final String url;
@@ -23,12 +23,12 @@ class CacheNetworkImage extends ImageProvider<CacheNetworkImage> {
   final Map<String, String>? headers;
 
   @override
-  Future<CacheNetworkImage> obtainKey(ImageConfiguration configuration) {
-    return SynchronousFuture<CacheNetworkImage>(this);
+  Future<CustomNetworkImage> obtainKey(ImageConfiguration configuration) {
+    return SynchronousFuture<CustomNetworkImage>(this);
   }
 
   @override
-  ImageStreamCompleter load(CacheNetworkImage key, DecoderCallback decode) {
+  ImageStreamCompleter load(CustomNetworkImage key, DecoderCallback decode) {
     // Ownership of this controller is handed off to [_loadAsync]; it is that
     // method's responsibility to close the controller's stream when the image
     // has been loaded or an error is thrown.
@@ -43,7 +43,7 @@ class CacheNetworkImage extends ImageProvider<CacheNetworkImage> {
       debugLabel: key.url,
       informationCollector: () => <DiagnosticsNode>[
         DiagnosticsProperty<ImageProvider>('Image provider', this),
-        DiagnosticsProperty<CacheNetworkImage>('Image key', key),
+        DiagnosticsProperty<CustomNetworkImage>('Image key', key),
         ErrorDescription('Path: ${file.path}'),
       ],
     );
@@ -51,7 +51,7 @@ class CacheNetworkImage extends ImageProvider<CacheNetworkImage> {
 
   @override
   ImageStreamCompleter loadBuffer(
-      CacheNetworkImage key, DecoderBufferCallback decode) {
+      CustomNetworkImage key, DecoderBufferCallback decode) {
     // Ownership of this controller is handed off to [_loadAsync]; it is that
     // method's responsibility to close the controller's stream when the image
     // has been loaded or an error is thrown.
@@ -67,7 +67,7 @@ class CacheNetworkImage extends ImageProvider<CacheNetworkImage> {
       debugLabel: key.url,
       informationCollector: () => <DiagnosticsNode>[
         DiagnosticsProperty<ImageProvider>('Image provider', this),
-        DiagnosticsProperty<CacheNetworkImage>('Image key', key),
+        DiagnosticsProperty<CustomNetworkImage>('Image key', key),
         ErrorDescription('Path: ${file.path}'),
       ],
     );
@@ -88,7 +88,7 @@ class CacheNetworkImage extends ImageProvider<CacheNetworkImage> {
   }
 
   Future<ui.Codec> _loadAsync(
-    CacheNetworkImage key,
+    CustomNetworkImage key,
     StreamController<ImageChunkEvent> chunkEvents,
     DecoderBufferCallback? decode,
     DecoderCallback? decodeDeprecated,
@@ -110,10 +110,12 @@ class CacheNetworkImage extends ImageProvider<CacheNetworkImage> {
 
           final Uint8List bytes = await file.readAsBytes();
 
-          chunkEvents.add(ImageChunkEvent(
-            cumulativeBytesLoaded: bytes.length,
-            expectedTotalBytes: bytes.length,
-          ));
+          chunkEvents.add(
+            ImageChunkEvent(
+              cumulativeBytesLoaded: bytes.length,
+              expectedTotalBytes: bytes.length,
+            ),
+          );
 
           return decode(await ui.ImmutableBuffer.fromUint8List(bytes));
         }
@@ -183,7 +185,7 @@ class CacheNetworkImage extends ImageProvider<CacheNetworkImage> {
       return false;
     }
 
-    return other is CacheNetworkImage &&
+    return other is CustomNetworkImage &&
         other.url == url &&
         other.scale == scale;
   }
@@ -193,5 +195,5 @@ class CacheNetworkImage extends ImageProvider<CacheNetworkImage> {
 
   @override
   String toString() =>
-      '${objectRuntimeType(this, 'CacheNetworkImage')}("$url", scale: $scale)';
+      '${objectRuntimeType(this, 'CustomNetworkImage')}("$url", scale: $scale)';
 }

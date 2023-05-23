@@ -30,6 +30,7 @@ final localCacheDirectoryMap = <MessageType, Directory>{
   MessageType.voice: Initialization.voiceSaveDir,
   MessageType.picture: Initialization.pictureSaveDir,
   MessageType.video: Initialization.voiceSaveDir,
+  MessageType.file: Initialization.unknownFileDir,
 };
 
 String generatePath(Directory rootDir, String url) {

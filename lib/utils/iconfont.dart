@@ -16,4 +16,7 @@ class Iconfonts {
   static const IconData close = IconData(0xe7fd, fontFamily: 'Iconfont');
   static const IconData bell = IconData(0xe7c8, fontFamily: 'Iconfont');
   static const IconData search = IconData(0xe8ef, fontFamily: 'Iconfont');
+  static const IconData send = IconData(0xe916, fontFamily: 'Iconfont');
+  static const IconData user = IconData(0xe7ae, fontFamily: 'Iconfont');
+  static const IconData download = IconData(0xe7f6, fontFamily: 'Iconfont');
 }

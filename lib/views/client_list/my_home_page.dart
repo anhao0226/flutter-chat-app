@@ -2,20 +2,19 @@ import 'package:flutter_chat_app/main.dart';
 import 'package:flutter_chat_app/my_app.dart';
 import 'package:flutter_chat_app/providers/chat_provider.dart';
 import 'package:flutter_chat_app/providers/ws_client_management.dart';
-import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/utils/initialization.dart';
-import 'package:flutter_chat_app/views/chat_dialog/chat_dialog_view.dart';
 import 'package:flutter_chat_app/views/client_list/avatar_component.dart';
 import 'package:flutter_chat_app/views/client_list/status_bar.dart';
 import 'package:flutter_chat_app/views/common_components/wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/home_state_management.dart';
 import '../../utils/iconfont.dart';
-import '../../utils/route.dart';
+import '../../router/router.dart';
 import '../../utils/websocket.dart';
 import 'client_list_view.dart';
 
@@ -39,7 +38,6 @@ class _MyHomeViewState extends State<MyHomeView> {
   }
 
   void _initData() async {
-    await WSClientManagement.instance.loadCacheClients();
     await WSClientManagement.instance.fetchClients();
   }
 
@@ -170,13 +168,14 @@ class _MyHomeViewState extends State<MyHomeView> {
           AnimatedCrossFade(
             firstChild: IconButton(
               onPressed: () {
-                if (MyApp.navigatorKey.currentState!.canPop()) {
-                  MyApp.navigatorKey.currentState!
-                      .pushReplacementNamed(RouteName.settingPage);
-                } else {
-                  MyApp.navigatorKey.currentState
-                      ?.pushNamed(RouteName.settingPage);
-                }
+                context.push(RoutePaths.settings);
+                // if (MyApp.navigatorKey.currentState!.canPop()) {
+                //   MyApp.navigatorKey.currentState!
+                //       .pushReplacementNamed(RouteName.settingPage);
+                // } else {
+                //   MyApp.navigatorKey.currentState
+                //       ?.pushNamed(RouteName.settingPage);
+                // }
               },
               icon: const Icon(Iconfonts.setting, size: 24),
             ),
@@ -243,7 +242,8 @@ class _MyHomeViewState extends State<MyHomeView> {
           child: badges.Badge(
             showBadge: showDot[Segment.message]!,
             position: badges.BadgePosition.topStart(),
-            child: const Text('Messages'),
+            // child: const Text('Messages'),
+            child: const Icon(Iconfonts.message),
           ),
         ),
         Segment.online: Padding(
@@ -251,7 +251,8 @@ class _MyHomeViewState extends State<MyHomeView> {
           child: badges.Badge(
             showBadge: showDot[Segment.online]!,
             position: badges.BadgePosition.topStart(),
-            child: const Text('Online'),
+            child: const Icon(Iconfonts.user),
+            // child: const Text('Online'),
           ),
         ),
       },

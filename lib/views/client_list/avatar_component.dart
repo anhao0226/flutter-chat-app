@@ -11,11 +11,11 @@ class AvatarComponent extends StatelessWidget {
   const AvatarComponent({
     super.key,
     required this.client,
-    required this.selected,
     this.width = 46.0,
     this.height = 46.0,
     this.showBadge = true,
     this.online = false,
+    this.selected = false,
   });
 
   final double width;
@@ -53,7 +53,7 @@ class AvatarComponent extends StatelessWidget {
               ? Image.asset("assets/icons/chat.png")
               : Image(
                   fit: BoxFit.fitWidth,
-                  image: CacheNetworkImage(
+                  image: CustomNetworkImage(
                     client.avatarUrl,
                     File(client.avatarPath),
                   ),

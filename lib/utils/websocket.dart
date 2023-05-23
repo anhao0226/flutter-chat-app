@@ -10,17 +10,17 @@ import 'package:web_socket_channel/io.dart';
 import 'database.dart';
 
 class WSUtil {
-  WSUtil._();
-
-  static WSUtil? _instance;
-
-  static WSUtil get instance => WSUtil();
-
   factory WSUtil() {
     _instance ??= WSUtil._();
     _streamController ??= StreamController.broadcast();
     return _instance!;
   }
+
+  WSUtil._();
+
+  static WSUtil? _instance;
+
+  static WSUtil get instance => WSUtil();
 
   static IOWebSocketChannel? _webSocketChannel;
 
@@ -75,6 +75,7 @@ class WSUtil {
     switch (message.type) {
       case MessageType.text:
         break;
+      case MessageType.file:
       case MessageType.voice:
       case MessageType.video:
       case MessageType.picture:
@@ -103,6 +104,7 @@ class WSUtil {
     );
     // 处理对应类型数据
     switch (msgType) {
+      case MessageType.file:
       case MessageType.voice:
       case MessageType.video:
       case MessageType.picture:

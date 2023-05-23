@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter_chat_app/utils/iconfont.dart';
 import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/utils/initialization.dart';
-import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/router/router.dart';
 import 'package:flutter_chat_app/utils/websocket.dart';
 import 'package:flutter/material.dart';
 
@@ -49,7 +49,7 @@ class _StatusBarComponentState extends State<StatusBarComponent> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, RouteName.initSettingPage);
+                Navigator.pushNamed(context, RoutePaths.init);
               },
               child: const Text("Setting"),
             )

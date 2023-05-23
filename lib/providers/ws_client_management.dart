@@ -13,14 +13,16 @@ import '../utils/dio_instance.dart';
 import 'home_state_management.dart';
 
 class WSClientManagement extends ChangeNotifier {
-  WSClientManagement._();
-
-  static WSClientManagement? _instance;
-
   factory WSClientManagement() {
     _instance ??= WSClientManagement._();
     return _instance!;
   }
+
+  WSClientManagement._() {
+    loadCacheClients();
+  }
+
+  static WSClientManagement? _instance;
 
   static WSClientManagement get instance => WSClientManagement();
 
@@ -92,7 +94,7 @@ class WSClientManagement extends ChangeNotifier {
   }
 
   bool _checkSelf(String value) {
-    return value == Initialization.client!.uid;
+    return Initialization.client != null && value == Initialization.client!.uid;
   }
 
   // consumer message

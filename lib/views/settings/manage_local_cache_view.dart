@@ -1,10 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter_chat_app/utils/index.dart';
-import 'package:flutter_chat_app/utils/initialization.dart';
-import 'package:flutter_chat_app/utils/device_info.dart';
-import 'package:flutter_chat_app/utils/route.dart';
-import 'package:flutter_chat_app/views/image_view.dart';
 import 'package:flutter/material.dart';
 
 import 'manage_local_image.dart';

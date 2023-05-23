@@ -1,45 +1,35 @@
-import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class Manager {
-  static Manager? _instance;
+class Global {
+  static int _id = 0;
 
-  Manager._();
+  static int get id => _id;
 
-  factory Manager() {
-    _instance ??= Manager._();
-    return _instance!;
-  }
-
-  static Manager get instance => Manager();
-}
-
-class ToJson {
-
-  String name = "";
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      "name": "zjh",
-      "data": <String, dynamic>{
-        "a": 1,
-        "b": 2,
-      }
-    };
+  static void doCount() {
+    _id++;
   }
 }
 
-void main() {
+class P extends ChangeNotifier {
+  int get count => Global.id;
+}
 
-   var t = jsonEncode(ToJson().toMap());
+class TestPage extends StatelessWidget {
+  const TestPage({super.key});
 
-   print(t);
-
-  // // 无论如何初始化，取到的都是同一个对象
-  // Manager manager1 = Manager();
-  // Manager manager2 = Manager.instance;
-  // Manager manager3 = Manager();
-  // Manager manager4 = Manager.instance;
-  // print(identical(manager1, manager2)); //true
-  // print(identical(manager1, manager3)); //true
-  // print(identical(manager3, manager4)); //true
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          Global.doCount();
+        },
+      ),
+      body: Center(
+        child: Text(context.read<P>().count.toString()),
+      ),
+    );
+  }
 }

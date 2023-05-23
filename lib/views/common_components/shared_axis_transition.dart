@@ -7,7 +7,7 @@ import 'package:flutter_chat_app/models/ws_client_model.dart';
 import 'package:flutter_chat_app/utils/dio_instance.dart';
 import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/utils/initialization.dart';
-import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/router/router.dart';
 import 'package:flutter_chat_app/utils/websocket.dart';
 import 'package:flutter_chat_app/views/common_components/wrapper.dart';
 import 'package:flutter_chat_app/views/settings/select_avator_view.dart';

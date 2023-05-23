@@ -41,7 +41,7 @@ class _SharedDialogState extends State<SharedDialog> {
             maxHeight: MediaQuery.of(context).size.height * 0.3,
           ),
           child: Image(
-            image: CacheNetworkImage(
+            image: CustomNetworkImage(
               widget.message.text,
               File(widget.message.filepath!),
             ),

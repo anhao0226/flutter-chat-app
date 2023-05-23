@@ -1,19 +1,24 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/views/chat_dialog/take_picture_view.dart';
 import 'package:flutter_chat_app/views/image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 
 typedef ValueCallback<T> = void Function(T value, Map<String, dynamic> extend);
 
 class ChatActionsComponent extends StatefulWidget {
   const ChatActionsComponent({
     super.key,
-    required this.onSend,
+    required this.onSendImage,
+    required this.onSendFile,
   });
 
-  final ValueCallback onSend;
+  final ValueCallback onSendFile;
+  final ValueCallback onSendImage;
 
   static const double width = 80;
 
@@ -25,7 +30,8 @@ class _ChatActionsComponentState extends State<ChatActionsComponent> {
   final ImagePicker picker = ImagePicker();
 
   void _handlePickImage() async {
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 40);
+    final XFile? image =
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 40);
     if (!mounted) return;
     if (image == null) return;
     showModalBottomSheet(
@@ -41,13 +47,24 @@ class _ChatActionsComponentState extends State<ChatActionsComponent> {
     );
   }
 
+  void _handlePickerFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      PlatformFile file = result.files.first;
+      var extend = <String, dynamic>{};
+      widget.onSendFile(file.path, extend);
+    } else {
+      // User canceled the picker
+    }
+  }
+
   void _handleSendImage(String filepath) async {
     var imgSize = await imageSize(filepath);
     var extend = <String, dynamic>{};
     extend["width"] = imgSize.width;
     extend["height"] = imgSize.height;
     extend["ratio"] = imgSize.width / imgSize.height;
-    widget.onSend(filepath, extend);
+    widget.onSendImage(filepath, extend);
   }
 
   @override
@@ -97,6 +114,20 @@ class _ChatActionsComponentState extends State<ChatActionsComponent> {
                 }
               },
               icon: const Icon(Icons.camera_alt, color: Color(0xFFF5F7FA)),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(right: 10),
+            decoration: const BoxDecoration(
+              color: Color(0xFF967ADC),
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+            ),
+            child: IconButton(
+              onPressed: () => _handlePickerFile(),
+              icon: const Icon(
+                Icons.file_open,
+                color: Color(0xFFF5F7FA),
+              ),
             ),
           ),
         ],
