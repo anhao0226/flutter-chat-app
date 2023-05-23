@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_chat_app/models/client_state.dart';
 import 'package:flutter_chat_app/models/ws_message_model.dart';
+import 'package:flutter_chat_app/utils/hive.dart';
 import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/utils/initialization.dart';
 import 'package:flutter_chat_app/utils/notification.dart';
@@ -13,33 +14,41 @@ import '../utils/dio_instance.dart';
 import 'home_state_management.dart';
 
 class WSClientManagement extends ChangeNotifier {
-  WSClientManagement._();
-
-  static WSClientManagement? _instance;
-
   factory WSClientManagement() {
     _instance ??= WSClientManagement._();
     return _instance!;
   }
 
+  WSClientManagement._() {
+    loadCacheClients();
+  }
+
+  static WSClientManagement? _instance;
+
   static WSClientManagement get instance => WSClientManagement();
 
-  //
   final _clients = <WSClient>[];
+  final _clientStates = <WSClient>[];
+  final _clientsMap = <String, WSClient>{};
+  final _clientStateMap = <String, int>{};
+  WSClient? _hasChatState;
 
+  //
   List<WSClient> get clients => _clients;
 
-  final _clientsMap = <String, WSClient>{};
+  List<WSClient> get clientStates => _clientStates;
 
-  //
-  final _clientsState = <WSClient>[];
-
-  List<WSClient> get clientState => _clientsState;
-
-  final _clientStateSet = <String>{};
-
-  //
-  WSClient? _hasChatState;
+  void removeItem(WSClient client) {
+    _clients.remove(client);
+    //
+    if (_clientStateMap.containsKey(client.uid)) {
+      _clientStates.remove(client);
+      _clientStateMap.remove(client.uid);
+    }
+    HiveUtils.instance.clients.delete(client.uid);
+    // clear chat data
+    notifyListeners();
+  }
 
   void _addClient(WSClient client, bool save) {
     _clients.add(client);
@@ -58,13 +67,13 @@ class WSClientManagement extends ChangeNotifier {
 
   Future<void> loadCacheClients() async {
     _clients.clear();
-    var keys = Initialization.clientsCache.keys;
+    var keys = HiveUtils.instance.clients.keys;
     for (var clientId in keys) {
       final client = await _getClientCache(clientId);
       if (client != null && !_checkSelf(client.uid)) {
         if (client.state != null) {
-          _clientsState.add(client);
-          _clientStateSet.add(client.uid);
+          _clientStates.add(client);
+          _clientStateMap[client.uid] = 0;
         }
         _addClient(client, false);
       }
@@ -92,7 +101,7 @@ class WSClientManagement extends ChangeNotifier {
   }
 
   bool _checkSelf(String value) {
-    return value == Initialization.client!.uid;
+    return Initialization.client != null && value == Initialization.client!.uid;
   }
 
   // consumer message
@@ -102,6 +111,7 @@ class WSClientManagement extends ChangeNotifier {
       case MessageType.voice:
       case MessageType.video:
       case MessageType.picture:
+      case MessageType.file:
         _handleChatMessage(message);
         return;
       case MessageType.online:
@@ -132,14 +142,14 @@ class WSClientManagement extends ChangeNotifier {
   void _handleChatMessage(WSMessage message) {
     if (_clientsMap.containsKey(message.sender)) {
       var client = _clientsMap[message.sender]!;
-      logger.i(_clientStateSet.toList());
+
       if (_hasChatState == null) {
         if (client.state == null) {
           client.state = ClientState.copyWith(message);
           client.state?.wsClient = client;
-          _clientStateSet.add(client.uid);
-          _clientsState.add(client);
-        } else if (_clientStateSet.contains(message.sender)) {
+          _clientStateMap[client.uid] = 0;
+          _clientStates.add(client);
+        } else if (_clientStateMap.containsKey(message.sender)) {
           client.state!.updateValue(message);
         }
       } else if (_hasChatState!.uid != message.sender) {
@@ -166,19 +176,19 @@ class WSClientManagement extends ChangeNotifier {
   void clearClientState(List<WSClient> values) {
     for (var element in values) {
       element.state = null;
-      _clientsState.remove(element);
-      _clientStateSet.remove(element.uid);
+      _clientStates.remove(element);
+      _clientStateMap.remove(element.uid);
       _saveClientToCache(element);
     }
     notifyListeners();
   }
 
-  Future<WSClient?> _getClientCache(String uid) async {
-    return await Initialization.clientsCache.get(uid);
+  Future<WSClient?> _getClientCache(String key) async {
+    return await HiveUtils.instance.clients.get(key);
   }
 
   void _saveClientToCache(WSClient client) {
-    Initialization.clientsCache.put(client.uid, client);
+    HiveUtils.instance.clients.put(client.uid, client);
   }
 
   enterChatStatus(WSClient client) {

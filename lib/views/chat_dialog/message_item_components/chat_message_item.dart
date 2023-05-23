@@ -1,24 +1,23 @@
-import 'dart:io';
-import 'dart:math';
-
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_chat_app/models/ws_client_model.dart';
 import 'package:flutter_chat_app/models/ws_message_model.dart';
 import 'package:flutter_chat_app/providers/chat_provider.dart';
 import 'package:flutter_chat_app/providers/multiple_select_notifier.dart';
-import 'package:flutter_chat_app/utils/database.dart';
 import 'package:flutter_chat_app/utils/dio_instance.dart';
-import 'package:flutter_chat_app/utils/iconfont.dart';
 import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/utils/initialization.dart';
-import 'package:flutter_chat_app/utils/network_image.dart';
-import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/router/router.dart';
 import 'package:flutter_chat_app/views/chat_dialog/actions_bottom_sheet.dart';
+import 'package:flutter_chat_app/views/chat_dialog/message_item_components/file_component.dart';
 import 'package:flutter_chat_app/views/chat_dialog/message_item_components/shap_component.dart';
 import 'package:flutter_chat_app/views/chat_dialog/theme.dart';
 import 'package:flutter_chat_app/views/client_list/avatar_component.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import 'text_component.dart';
@@ -44,6 +43,7 @@ class _ChatMessageItemState extends State<ChatMessageItem>
   final CancelToken _cancelToken = CancelToken();
   MessageStatus _status = MessageStatus.normal;
   CrossFadeState _avatarState = CrossFadeState.showFirst;
+  List<ActionType> _sharedActions = [];
 
   @override
   void initState() {
@@ -65,8 +65,14 @@ class _ChatMessageItemState extends State<ChatMessageItem>
   }
 
   Widget _getMessageUI() {
+    _sharedActions = [
+      ActionType.shared,
+      ActionType.multiple,
+      ActionType.delete,
+    ];
     switch (widget.message.type) {
       case MessageType.text:
+        _sharedActions.add(ActionType.copy);
         return ShapeWrapComponent(
           onTap: () {},
           onLongPress: _handleItemLongPress,
@@ -92,6 +98,13 @@ class _ChatMessageItemState extends State<ChatMessageItem>
         return PictureMessageComponent(
           status: _status,
           message: widget.message,
+          onLongPress: _handleItemLongPress,
+        );
+      case MessageType.file:
+        _sharedActions.add(ActionType.download);
+        return FileMessageComponent(
+          message: widget.message,
+          theme: widget.isSelf ? ChatTheme.right : ChatTheme.left,
           onLongPress: _handleItemLongPress,
         );
       default:
@@ -146,11 +159,11 @@ class _ChatMessageItemState extends State<ChatMessageItem>
       setState(() => _status = status);
     }
     // update database status
-    ChatRecordDbUtil.update(
-      where: "id = ?",
-      whereArgs: [widget.message.id],
-      values: {"status": status.value},
-    );
+    // ChatRecordDbUtil.update(
+    //   where: "id = ?",
+    //   whereArgs: [widget.message.id],
+    //   values: {"status": status.value},
+    // );
   }
 
   void _deleteRecords() async {
@@ -170,11 +183,7 @@ class _ChatMessageItemState extends State<ChatMessageItem>
   }
 
   void _handleSharedMessage() {
-    Navigator.pushNamed(
-      context,
-      RouteName.shareUsersPage,
-      arguments: widget.message,
-    ).then((value) {
+    context.push(RoutePaths.clientShared, extra: widget.message).then((value) {
       if (value != null && value as bool) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -194,6 +203,17 @@ class _ChatMessageItemState extends State<ChatMessageItem>
     });
   }
 
+  void _handleSaveFileToLocal() async {
+    var directory = await getApplicationDocumentsDirectory();
+    logger.i(directory);
+    if (await Permission.manageExternalStorage.status.isGranted) {
+      var directory = await getExternalStorageDirectory();
+      logger.i(directory);
+    } else {
+      await Permission.manageExternalStorage.request();
+    }
+  }
+
   void _handleItemLongPress() async {
     if (MultipleSelectNotifier.instance.value) {
       if (_avatarState == CrossFadeState.showFirst) {
@@ -210,20 +230,13 @@ class _ChatMessageItemState extends State<ChatMessageItem>
     }
     setState(() => _avatarState = CrossFadeState.showSecond);
 
-    var actions = [
-      ActionType.shared,
-      ActionType.multiple,
-      ActionType.copy,
-      ActionType.delete,
-    ];
-    //
     if (widget.message.status == MessageStatus.error) {
-      actions.add(ActionType.send);
+      _sharedActions.add(ActionType.send);
     }
 
     var tapActionType = await showModalBottomSheet(
       context: context,
-      builder: (context) => ActionsBottomSheet(actions: actions),
+      builder: (context) => ActionsBottomSheet(actions: _sharedActions),
     );
 
     if (!mounted) return;
@@ -245,6 +258,9 @@ class _ChatMessageItemState extends State<ChatMessageItem>
           break;
         case ActionType.copy:
           Clipboard.setData(ClipboardData(text: widget.message.text));
+          break;
+        case ActionType.download:
+          _handleSaveFileToLocal();
           break;
       }
     }
@@ -268,18 +284,14 @@ class _ChatMessageItemState extends State<ChatMessageItem>
         mainAxisAlignment:
             widget.isSelf ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: _buildChildren(),
+        children: _needReversed(widget.isSelf, [
+          _getAvatar(),
+          const SizedBox(width: 12),
+          _getMessageUI(),
+          _getStatusUI(),
+        ]),
       ),
     );
-  }
-
-  List<Widget> _buildChildren() {
-    return _needReversed(widget.isSelf, [
-      _getAvatar(),
-      const SizedBox(width: 12),
-      _getMessageUI(),
-      _getStatusUI(),
-    ]);
   }
 
   List<Widget> _needReversed(bool need, List<Widget> value) {

@@ -3,20 +3,19 @@
 import 'dart:convert';
 import 'dart:io';
 
-
 enum MessageType {
   text(0, ""),
   voice(1, "[voice]"),
   video(2, "[video]"),
   picture(3, "[picture]"),
   online(4, "[online]"),
-  offline(5, "[offline]");
+  offline(5, "[offline]"),
+  file(6, "[file]");
 
   const MessageType(this.value, this.tag);
 
   final int value;
   final String tag;
-
 }
 
 enum MessageStatus {

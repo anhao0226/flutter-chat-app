@@ -5,24 +5,25 @@ import 'package:flutter/cupertino.dart';
 import '../views/client_list/my_home_page.dart';
 
 class HomeStateManagement extends ChangeNotifier {
+  factory HomeStateManagement() {
+    _instance ??= HomeStateManagement._();
+    return _instance!;
+  }
+
   HomeStateManagement._();
 
   static HomeStateManagement? _instance;
 
   static HomeStateManagement get instance => HomeStateManagement();
 
-  factory HomeStateManagement() {
-    _instance ??= HomeStateManagement._();
-    return _instance!;
-  }
-
   Segment _currSegment = Segment.message;
+
+  Segment get segment => _currSegment;
 
   final showDot = <Segment, bool>{
     Segment.online: false,
     Segment.message: false,
   };
-
 
   bool isMultipleSelectState = false;
 

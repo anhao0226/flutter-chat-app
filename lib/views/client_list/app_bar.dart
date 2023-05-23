@@ -3,8 +3,9 @@ import 'dart:io';
 import 'package:flutter_chat_app/utils/iconfont.dart';
 import 'package:flutter_chat_app/utils/initialization.dart';
 import 'package:flutter_chat_app/utils/network_image.dart';
-import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/router/router.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ClientListAppBar extends StatefulWidget {
   const ClientListAppBar({
@@ -106,8 +107,7 @@ class _ClientListAppBarState extends State<ClientListAppBar> {
         AnimatedCrossFade(
           firstChild: IconButton(
             onPressed: () {
-              // Navigator.push(context, CupertinoPageRoute(builder: (_) => SettingView()));
-              Navigator.pushNamed(context, RouteName.settingPage);
+              context.go(RoutePaths.settings);
             },
             icon: const Icon(Iconfonts.setting, size: 24),
           ),

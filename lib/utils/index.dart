@@ -9,7 +9,11 @@ import 'package:uuid/uuid.dart';
 
 import 'initialization.dart';
 
+//
 const Uuid uuid = Uuid();
+
+// logger
+final logger = Logger(printer: PrettyPrinter());
 
 // imageSize
 Future<ui.Image> imageSize(String filepath) async {
@@ -23,13 +27,12 @@ Future<ui.Image> imageSize(String filepath) async {
   return completer.future;
 }
 
-// logger
-final logger = Logger(printer: PrettyPrinter());
 
 final localCacheDirectoryMap = <MessageType, Directory>{
   MessageType.voice: Initialization.voiceSaveDir,
   MessageType.picture: Initialization.pictureSaveDir,
   MessageType.video: Initialization.voiceSaveDir,
+  MessageType.file: Initialization.unknownFileDir,
 };
 
 String generatePath(Directory rootDir, String url) {

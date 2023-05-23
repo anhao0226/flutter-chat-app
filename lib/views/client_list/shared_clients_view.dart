@@ -1,9 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter_chat_app/database/chat_db_utils.dart';
 import 'package:flutter_chat_app/models/ws_client_model.dart';
 import 'package:flutter_chat_app/models/ws_message_model.dart';
 import 'package:flutter_chat_app/providers/ws_client_management.dart';
-import 'package:flutter_chat_app/utils/database.dart';
 import 'package:flutter_chat_app/utils/dio_instance.dart';
 import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/utils/initialization.dart';
@@ -61,7 +61,11 @@ class _SharedClientListViewState extends State<SharedClientListView> {
     if (widget.message.type == MessageType.text) {
       for (var receiver in receivers) {
         WSUtil.instance.messageWrap(
-            widget.message.text, receiver, widget.message.type, null);
+          widget.message.text,
+          receiver,
+          widget.message.type,
+          null,
+        );
       }
     } else {
       handleUploadFile(
@@ -112,7 +116,7 @@ class _SharedClientListViewState extends State<SharedClientListView> {
   void _saveToDatabase(List<String> receivers) async {
     for (var receiver in receivers) {
       widget.message.receiver = receiver;
-      await ChatRecordDbUtil.insertRecord(widget.message);
+      await ChatDatabase.insertRecord(widget.message);
     }
   }
 
@@ -261,5 +265,4 @@ class _SharedClientListViewState extends State<SharedClientListView> {
       ),
     );
   }
-
 }

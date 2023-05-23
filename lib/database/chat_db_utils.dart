@@ -1,12 +1,42 @@
 import 'dart:io';
 
 import 'package:flutter_chat_app/models/ws_message_model.dart';
+import 'package:sqflite/sqflite.dart';
 
-import 'initialization.dart';
-import 'index.dart';
+import '../utils/initialization.dart';
+import 'package:path/path.dart' as path;
 
-class ChatRecordDbUtil {
-  static const String _tableName = "Chats";
+class ChatDatabase {
+  static late Database _database;
+
+  static const String _tableName = "chats";
+
+  static Future open(String dirPath) async {
+    String filepath = path.join(dirPath, "database.db");
+    _database = await openDatabase(
+      filepath,
+      version: 1,
+      onCreate: (Database db, int version) async {
+        await _createChatTable(db);
+      },
+    );
+  }
+
+  // create table
+  static Future<void> _createChatTable(Database db) {
+    return db.execute(
+      "CREATE TABLE chats("
+      "id        INTEGER PRIMARY KEY,"
+      "text      TEXT,"
+      "receiver  VARCHAR(36),"
+      "sender    VARCHAR(36),"
+      "type      INT,"
+      "timestamp INTEGER,"
+      "filepath  VARCHAR(255),"
+      "extend    VARCHAR(255),"
+      "status    INT)",
+    );
+  }
 
   // update record
   static Future<int> update({
@@ -14,13 +44,13 @@ class ChatRecordDbUtil {
     required List<Object?>? whereArgs,
     required Map<String, Object?> values,
   }) {
-    return Initialization.database
-        .update(_tableName, values, where: where, whereArgs: whereArgs);
+    return _database.update(_tableName, values,
+        where: where, whereArgs: whereArgs);
   }
 
   // insert record
   static Future<int> insertRecord(WSMessage message) {
-    return Initialization.database.insert(_tableName, message.toSaveMap());
+    return _database.insert(_tableName, message.toSaveMap());
   }
 
   static void _deleteFile(String? filepath, MessageType type) async {
@@ -38,11 +68,8 @@ class ChatRecordDbUtil {
   }
 
   static Future<int> deleteRow(WSMessage message) async {
-    int count = await Initialization.database.delete(
-      _tableName,
-      where: "id = ?",
-      whereArgs: [message.id],
-    );
+    int count = await _database
+        .delete(_tableName, where: "id = ?", whereArgs: [message.id]);
     _deleteFile(message.filepath, message.type);
     return count;
   }
@@ -50,7 +77,7 @@ class ChatRecordDbUtil {
   // delete record
   static Future<List<Object?>> deleteRecord(String receiver) async {
     // query data
-    var records = await Initialization.database.query(
+    var records = await _database.query(
       _tableName,
       columns: ["id", "filepath", "type"],
       where: "receiver = ? OR sender = ?",
@@ -64,7 +91,7 @@ class ChatRecordDbUtil {
       _deleteFile(element["filepath"] as String?, messageType);
     }
     // delete records
-    var batch = Initialization.database.batch();
+    var batch = _database.batch();
     for (var element in idList) {
       batch.delete(_tableName, where: "id = ?", whereArgs: [element]);
     }
@@ -89,7 +116,7 @@ class ChatRecordDbUtil {
       whereArgs.add(endId);
     }
 
-    var records = await Initialization.database.query(_tableName,
+    var records = await _database.query(_tableName,
         where: whereCond, whereArgs: whereArgs, orderBy: orderBy, limit: limit);
 
     var result = List.generate(

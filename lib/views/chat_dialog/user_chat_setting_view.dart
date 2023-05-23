@@ -1,6 +1,5 @@
 import 'package:flutter_chat_app/models/ws_client_model.dart';
 import 'package:flutter_chat_app/providers/chat_provider.dart';
-import 'package:flutter_chat_app/utils/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,9 +30,9 @@ class _UserChatSettingViewState extends State<UserChatSettingView> {
             ),
             TextButton(
               onPressed: () {
-                ChatRecordDbUtil.deleteRecord(widget.client.uid);
-                actions.add(Operation.clear);
-                Navigator.pop(context);
+                // ChatRecordDbUtil.deleteRecord(widget.client.uid);
+                // actions.add(Operation.clear);
+                // Navigator.pop(context);
               },
               child: const Text("Done"),
             ),

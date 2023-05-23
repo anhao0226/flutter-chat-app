@@ -1,23 +1,22 @@
 import 'dart:convert';
 
-import 'package:flutter_chat_app/main.dart';
 import 'package:flutter_chat_app/models/ws_client_model.dart';
 import 'package:flutter_chat_app/my_app.dart';
-import 'package:flutter_chat_app/providers/chat_provider.dart';
 import 'package:flutter_chat_app/utils/app_lifecycle.dart';
 import 'package:flutter_chat_app/utils/index.dart';
-import 'package:flutter_chat_app/utils/route.dart';
-import 'package:flutter_chat_app/views/chat_dialog/chat_dialog_view.dart';
+import 'package:flutter_chat_app/router/router.dart';
 import 'package:flutter_chat_app/views/request_permission_view.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
+
+  static const String _channelName = "flutter_chat_app";
+
+  static int _channelId = -1;
 
   static Future<void> initNotification() async {
     // android
@@ -42,13 +41,13 @@ class NotificationService {
   }
 
   static Future<NotificationDetails> notificationDetails() async {
-    return const NotificationDetails(
+    return NotificationDetails(
       android: AndroidNotificationDetails(
-        'channelId',
-        'channelName',
+        (_channelId++).toString(),
+        _channelName,
         importance: Importance.max,
       ),
-      iOS: DarwinNotificationDetails(),
+      iOS: const DarwinNotificationDetails(),
     );
   }
 
@@ -96,7 +95,7 @@ class NotificationService {
     logger.i(payload);
     var client = WSClient.formCache(payload);
     MyApp.navigatorKey.currentState
-        ?.pushReplacementNamed(RouteName.chatDialogPage, arguments: client);
+        ?.pushReplacementNamed(RoutePaths.clientChatting, arguments: client);
   }
 
   @pragma('vm:entry-point')

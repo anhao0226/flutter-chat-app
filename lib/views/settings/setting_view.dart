@@ -1,5 +1,6 @@
-import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/router/router.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingView extends StatefulWidget {
   const SettingView({super.key});
@@ -23,7 +24,7 @@ class _SettingViewState extends State<SettingView> {
             title: const Text("Manage client info"),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
-              Navigator.pushNamed(context, RouteName.initSettingPage);
+              context.push(RoutePaths.init);
             },
           ),
           ListTile(
@@ -31,7 +32,7 @@ class _SettingViewState extends State<SettingView> {
             title: const Text("Manage local cache"),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
-              Navigator.pushNamed(context, RouteName.manageLocalCachePage);
+              context.push(RoutePaths.cacheManagement);
             },
           ),
           ListTile(
@@ -39,7 +40,7 @@ class _SettingViewState extends State<SettingView> {
             title: const Text("Manage permission"),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
-              Navigator.pushNamed(context, RouteName.initPermissionPage);
+              context.push(RoutePaths.permissionSettings);
             },
           ),
         ],

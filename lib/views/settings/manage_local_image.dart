@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/utils/initialization.dart';
-import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/router/router.dart';
 import 'package:flutter_chat_app/views/animations/fade_animation.dart';
 import 'package:flutter_chat_app/views/common_components/wrapper.dart';
 import 'package:flutter_chat_app/views/image_view.dart';
@@ -76,17 +76,17 @@ class _ManageLocalImageViewState extends State<ManageLocalImageView> {
       case TabItems.voice:
         break;
       case TabItems.image:
-        Navigator.push(
-          context,
-          SlideRightRoute(
-            page: ImageView(
-              filepath: value.file.path,
-              onDelete: (value) {
-                _showDeleteDialog();
-              },
-            ),
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   SlideRightRoute(
+        //     page: ImageView(
+        //       filepath: value.file.path,
+        //       onDelete: (value) {
+        //         _showDeleteDialog();
+        //       },
+        //     ),
+        //   ),
+        // );
         break;
     }
   }

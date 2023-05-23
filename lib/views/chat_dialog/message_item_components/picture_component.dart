@@ -63,7 +63,7 @@ class _PictureMessageComponentState extends State<PictureMessageComponent> {
                 return Image(
                   filterQuality: FilterQuality.medium,
                   image: ResizeImage(
-                    CacheNetworkImage(
+                    CustomNetworkImage(
                       widget.message.text,
                       File(widget.message.filepath!),
                     ),

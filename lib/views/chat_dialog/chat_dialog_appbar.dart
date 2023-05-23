@@ -1,9 +1,11 @@
 import 'package:flutter_chat_app/models/ws_client_model.dart';
+import 'package:flutter_chat_app/models/ws_message_model.dart';
 import 'package:flutter_chat_app/providers/chat_provider.dart';
 import 'package:flutter_chat_app/providers/multiple_select_notifier.dart';
-import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/router/router.dart';
 import 'package:flutter_chat_app/views/chat_dialog/actions_bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ChatDialogAppbar extends StatelessWidget implements PreferredSizeWidget {
@@ -15,11 +17,7 @@ class ChatDialogAppbar extends StatelessWidget implements PreferredSizeWidget {
   final WSClient client;
 
   void _handleActions(BuildContext context) {
-    Navigator.pushNamed(
-      context,
-      RouteName.userChatSettingPage,
-      arguments: client,
-    ).then((value) {});
+    context.push(RoutePaths.clientChatSettings, extra: client).then((value) {});
   }
 
   void _handleMultipleDone(BuildContext context) async {
@@ -44,7 +42,7 @@ class ChatDialogAppbar extends StatelessWidget implements PreferredSizeWidget {
 
   void _handleDelRecords(BuildContext context) {
     var items = MultipleSelectNotifier.instance.selectedItems;
-    context.read<ChatProvider>().deleteRecords(items);
+    context.read<ChatProvider>().deleteRecords(items as List<WSMessage>);
     MultipleSelectNotifier.instance.exits();
   }
 

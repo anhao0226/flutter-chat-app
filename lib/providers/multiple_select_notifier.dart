@@ -2,18 +2,18 @@ import 'package:flutter_chat_app/models/ws_message_model.dart';
 import 'package:flutter/cupertino.dart';
 
 class MultipleSelectNotifier extends ValueNotifier<bool> {
+  factory MultipleSelectNotifier() {
+    _instance ??= MultipleSelectNotifier._(false);
+    return _instance!;
+  }
+
   static MultipleSelectNotifier? _instance;
 
   static MultipleSelectNotifier get instance => MultipleSelectNotifier();
 
   MultipleSelectNotifier._(super._value);
 
-  factory MultipleSelectNotifier() {
-    _instance ??= MultipleSelectNotifier._(false);
-    return _instance!;
-  }
-
-  static final _selectedItems = <WSMessage>[];
+   final _selectedItems = <WSMessage>[];
 
   List<WSMessage> get selectedItems => _selectedItems.toList();
 
@@ -41,21 +41,21 @@ class MultipleSelectNotifier extends ValueNotifier<bool> {
 
   void enter() => value = true;
 
-  void add(WSMessage message, {Function? listener}) {
+  void add(WSMessage value, {Function? listener}) {
     _count++;
-    _selectedItems.add(message);
+    _selectedItems.add(value);
     notifyListeners();
-    if (listener != null && !_listeners.containsKey(message)) {
-      _listeners[message] = listener;
+    if (listener != null && !_listeners.containsKey(value)) {
+      _listeners[value] = listener;
     }
   }
 
-  void remove(WSMessage message) {
+  void remove(WSMessage value) {
     _count--;
-    _selectedItems.remove(message);
+    _selectedItems.remove(value);
     notifyListeners();
-    if (_listeners.containsKey(message)) {
-      _listeners.remove(message);
+    if (_listeners.containsKey(value)) {
+      _listeners.remove(value);
     }
     if (_selectedItems.isEmpty) exits();
   }

@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter_chat_app/models/ws_client_model.dart';
 import 'package:flutter_chat_app/models/ws_message_model.dart';
-import 'package:flutter_chat_app/utils/database.dart';
 import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/utils/initialization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../database/chat_db_utils.dart';
 import '../utils/websocket.dart';
 
 enum LoadingState { loading, idle, hide }
@@ -51,7 +51,7 @@ class ChatProvider extends ChangeNotifier {
   }
 
   Future<void> handleLoadCacheMessage() async {
-    var records = await ChatRecordDbUtil.queryRecords(
+    var records = await ChatDatabase.queryRecords(
       receiver: _wsClient.uid,
       sender: Initialization.client!.uid,
     );
@@ -72,7 +72,7 @@ class ChatProvider extends ChangeNotifier {
       endId = messages.first.id;
     }
 
-    var records = await ChatRecordDbUtil.queryRecords(
+    var records = await ChatDatabase.queryRecords(
       limit: 8,
       endId: endId,
       sender: Initialization.client!.uid,
@@ -121,7 +121,7 @@ class ChatProvider extends ChangeNotifier {
   Future<bool> deleteRecords(List<WSMessage> values) async {
     logger.i(values);
     for (var msg in values) {
-      await ChatRecordDbUtil.deleteRow(msg);
+      await ChatDatabase.deleteRow(msg);
       if (msg.id >= messages.first.id) {
         messages.remove(msg);
       } else {

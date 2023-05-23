@@ -37,7 +37,6 @@ class InputBarController extends ValueNotifier<InputBarState> {
   }
 }
 
-
 // ChatInputBarComponent
 class InputBarComponent extends StatefulWidget {
   const InputBarComponent({
@@ -179,8 +178,10 @@ class _InputBarComponentState extends State<InputBarComponent> {
   Widget _buildExpandUI() {
     Widget component = Container();
     component = ChatActionsComponent(
-      onSend: (filepath, extend) =>
+      onSendImage: (filepath, extend) =>
           widget.onSend(filepath, MessageType.picture, extend),
+      onSendFile: (filepath, extend) =>
+          widget.onSend(filepath, MessageType.file, extend),
     );
     return component;
   }

@@ -1,12 +1,13 @@
 import 'package:flutter_chat_app/models/ws_client_model.dart';
 import 'package:flutter_chat_app/my_app.dart';
 import 'package:flutter_chat_app/utils/index.dart';
-import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/router/router.dart';
 import 'package:flutter_chat_app/views/animations/fade_animation.dart';
 import 'package:flutter_chat_app/views/client_list/avatar_component.dart';
 import 'package:flutter_chat_app/views/client_list/my_home_page.dart';
 import 'package:flutter_chat_app/views/common_components/wrapper.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/home_state_management.dart';
@@ -37,19 +38,27 @@ class _ClientListViewState extends State<ClientListView>
   }
 
   void _handleItemTap(WSClient client) {
-    WSClientManagement.instance.enterChatStatus(client);
-    var settings = MyRouteObserver.instance.currSetting!;
-    var arguments =
-        settings.arguments is WSClient ? settings.arguments as WSClient : null;
-    if (settings.name != RouteName.chatDialogPage ||
-        (arguments != null && arguments.uid != client.uid)) {
-      if (MyApp.navigatorKey.currentState!.canPop()) {
-        MyApp.navigatorKey.currentState!
-            .pushReplacementNamed(RouteName.chatDialogPage, arguments: client);
-      } else {
-        MyApp.navigatorKey.currentState
-            ?.pushNamed(RouteName.chatDialogPage, arguments: client);
-      }
+    if (HomeStateManagement.instance.segment == Segment.online) {
+      context.push(RoutePaths.clientDetails, extra: client);
+    } else {
+      WSClientManagement.instance.enterChatStatus(client);
+      context.push(RoutePaths.clientChatting, extra: client);
+      //
+      // var settings = MyRouteObserver.instance.currSetting!;
+      // var arguments = settings.arguments is WSClient
+      //     ? settings.arguments as WSClient
+      //     : null;
+      // if (settings.name != RouteName.chatDialogPage ||
+      //     (arguments != null && arguments.uid != client.uid)) {
+      //   if (MyApp.navigatorKey.currentState!.canPop()) {
+      //     MyApp.navigatorKey.currentState!.pushReplacementNamed(
+      //         RouteName.chatDialogPage,
+      //         arguments: client);
+      //   } else {
+      //     MyApp.navigatorKey.currentState
+      //         ?.pushNamed(RouteName.chatDialogPage, arguments: client);
+      //   }
+      // }
     }
   }
 
@@ -78,7 +87,7 @@ class _ClientListViewState extends State<ClientListView>
             late List<WSClient> items;
             late Function renderListTileFn;
             if (widget.segment == Segment.message) {
-              items = value.clientState;
+              items = value.clientStates;
               renderListTileFn = _getMessageListTile;
             } else if (widget.segment == Segment.online) {
               items = value.clients;

@@ -1,12 +1,15 @@
-import 'package:flutter_chat_app/utils/route.dart';
+import 'package:flutter_chat_app/router/router.dart';
 import 'package:flutter/material.dart';
+
+import '../../utils/iconfont.dart';
 
 enum ActionType {
   delete("Delete", Icons.delete),
   shared("Shared", Icons.share),
   multiple("Multiple", Icons.library_add_check),
   send("Resend", Icons.send),
-  copy("Copy", Icons.copy);
+  copy("Copy", Icons.copy),
+  download("Save", Iconfonts.download);
 
   const ActionType(this.label, this.iconData);
 
@@ -52,6 +55,7 @@ class _ActionsBottomSheetState extends State<ActionsBottomSheet> {
         case ActionType.copy:
         case ActionType.shared:
         case ActionType.multiple:
+        case ActionType.download:
           actions.add(
             _buildItem(
               label: element.label,
