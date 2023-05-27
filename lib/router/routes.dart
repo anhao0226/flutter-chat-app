@@ -101,8 +101,11 @@ final routes = <GoRoute>[
     path: RoutePaths.init,
     builder: (context, state) => const InitClientInfoView(),
   ),
+<<<<<<< HEAD
   GoRouteWrap(
     path: RoutePaths.amap,
     builder: (context, state) => const AmapView(),
   ),
+=======
+>>>>>>> origin/master
 ];
