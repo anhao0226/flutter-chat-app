@@ -114,6 +114,11 @@ class WSUtil {
         message.id = await _saveToDatabase(message);
         await File(text).copy(message.filepath!);
         break;
+      case MessageType.location:
+        message.extend = extend;
+        _webSocketChannel!.sink.add(jsonEncode(message.toJson()));
+        message.id = await _saveToDatabase(message);
+        break;
       case MessageType.text:
         _webSocketChannel!.sink.add(jsonEncode(message.toJson()));
         message.id = await _saveToDatabase(message);

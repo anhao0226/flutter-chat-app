@@ -26,7 +26,7 @@ class RoutePaths {
 
   static const String init = "/init";
 
-  static const String amap = "/amap";
+  static const String selectLocation = "/select_location";
 }
 
 //

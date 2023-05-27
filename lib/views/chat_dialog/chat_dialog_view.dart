@@ -79,6 +79,9 @@ class _ChatDialogViewState extends State<ChatDialogView>
     MessageType type,
     Map<String, dynamic>? extend,
   ) {
+
+    logger.i(extend);
+
     if (type == MessageType.picture) Navigator.pop(context);
     context
         .read<ChatProvider>()

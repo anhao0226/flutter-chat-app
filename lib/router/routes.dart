@@ -1,5 +1,8 @@
+import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_chat_app/router/router.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/views/chat_dialog/input_bar_components/actions/location/location_select_view.dart';
 import 'package:flutter_chat_app/views/client_list/amap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -101,11 +104,12 @@ final routes = <GoRoute>[
     path: RoutePaths.init,
     builder: (context, state) => const InitClientInfoView(),
   ),
-<<<<<<< HEAD
   GoRouteWrap(
-    path: RoutePaths.amap,
-    builder: (context, state) => const AmapView(),
+    path: RoutePaths.selectLocation,
+    builder: (context, state){
+      var latLng = state.extra ?? const LatLng(39.909187, 116.397451);
+      logger.i(latLng);
+      return SelectLocationView(initLatLng: latLng as LatLng);
+    },
   ),
-=======
->>>>>>> origin/master
 ];

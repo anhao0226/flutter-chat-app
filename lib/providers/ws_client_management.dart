@@ -112,6 +112,7 @@ class WSClientManagement extends ChangeNotifier {
       case MessageType.video:
       case MessageType.picture:
       case MessageType.file:
+      case MessageType.location:
         _handleChatMessage(message);
         return;
       case MessageType.online:

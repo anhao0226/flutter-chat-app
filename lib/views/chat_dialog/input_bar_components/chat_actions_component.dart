@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter_chat_app/router/router.dart';
 import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/views/chat_dialog/take_picture_view.dart';
 import 'package:flutter_chat_app/views/image_view.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -15,10 +17,12 @@ class ChatActionsComponent extends StatefulWidget {
     super.key,
     required this.onSendImage,
     required this.onSendFile,
+    required this.onSendLocation,
   });
 
   final ValueCallback onSendFile;
   final ValueCallback onSendImage;
+  final ValueCallback onSendLocation;
 
   static const double width = 80;
 
@@ -67,6 +71,14 @@ class _ChatActionsComponentState extends State<ChatActionsComponent> {
     widget.onSendImage(filepath, extend);
   }
 
+  void _handleSendLocation() {
+    context.push(RoutePaths.selectLocation).then((value) {
+      if (value != null) {
+        widget.onSendLocation("", value as Map<String, dynamic>);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -74,6 +86,7 @@ class _ChatActionsComponentState extends State<ChatActionsComponent> {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Container(
             margin: const EdgeInsets.only(right: 10),
@@ -126,6 +139,20 @@ class _ChatActionsComponentState extends State<ChatActionsComponent> {
               onPressed: () => _handlePickerFile(),
               icon: const Icon(
                 Icons.file_open,
+                color: Color(0xFFF5F7FA),
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(right: 10),
+            decoration: const BoxDecoration(
+              color: Color(0xFF967ADC),
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+            ),
+            child: IconButton(
+              onPressed: _handleSendLocation,
+              icon: const Icon(
+                Icons.map,
                 color: Color(0xFFF5F7FA),
               ),
             ),

@@ -1,7 +1,4 @@
-// WebsocketMessage
-
 import 'dart:convert';
-import 'dart:io';
 
 enum MessageType {
   text(0, ""),
@@ -10,7 +7,8 @@ enum MessageType {
   picture(3, "[picture]"),
   online(4, "[online]"),
   offline(5, "[offline]"),
-  file(6, "[file]");
+  file(6, "[file]"),
+  location(7, "[file]");
 
   const MessageType(this.value, this.tag);
 

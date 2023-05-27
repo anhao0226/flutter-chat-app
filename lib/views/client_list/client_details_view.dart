@@ -16,58 +16,59 @@ class ClientDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(),
       body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
         alignment: Alignment.center,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Center(
-              child: AvatarComponent(
-                width: 80,
-                height: 80,
-                client: client,
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 30),
+              color: Colors.white,
+              child: Column(
+                children: [
+                  Center(
+                    child: AvatarComponent(
+                      width: 80,
+                      height: 80,
+                      client: client,
+                      online: client.online,
+                    ),
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Text(
+                        client.nickname,
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Text(client.nickname),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 30),
-              child: OutlinedButton(
+            Container(
+              margin: const EdgeInsets.only(top: 16),
+              color: Colors.white,
+              child: TextButton(
                 onPressed: () {
                   context.pushReplacement(
                     RoutePaths.clientChatting,
                     extra: client,
                   );
                 },
-                style: OutlinedButton.styleFrom(
-                  elevation: 0,
-                  // foregroundColor: Colors.white,
-                  // backgroundColor: const Color(0xFF967ADC),
-                ),
                 child: const Text("Send message"),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: OutlinedButton(
+            Container(
+              margin: const EdgeInsets.only(top: 16),
+              color: Colors.white,
+              child: TextButton(
                 onPressed: () {
                   WSClientManagement.instance.removeItem(client);
                   context.pop();
                 },
-                style: OutlinedButton.styleFrom(
-                  elevation: 0,
-                  side: const BorderSide(
-                    color: Colors.redAccent,
-                  ),
-                  foregroundColor: Colors.redAccent,
-                  // backgroundColor: const Color(0xFF967ADC),
-                ),
                 child: const Text("Delete client"),
               ),
             ),

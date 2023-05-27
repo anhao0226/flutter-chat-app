@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_chat_app/utils/initialization.dart';
 import 'package:flutter_chat_app/utils/index.dart';
-import 'package:flutter_chat_app/views/chat_dialog/input_bar_components/record_overlay_component.dart';
+import 'package:flutter_chat_app/views/chat_dialog/input_bar_components/actions/record/record_overlay_component.dart';
 import 'package:flutter_chat_app/views/request_permission_view.dart';
 import 'package:flutter/material.dart';
 import 'package:record/record.dart';
@@ -56,7 +56,7 @@ class _RecordComponentViewState extends State<RecordComponentView> {
     });
 
     if (!Platform.isLinux) {
-       _record.onStateChanged().listen(_handleStateChanged);
+      _record.onStateChanged().listen(_handleStateChanged);
     }
 
     super.initState();
@@ -147,33 +147,34 @@ class _RecordComponentViewState extends State<RecordComponentView> {
     double top = bottom - 66;
     // logger.i(bottom);
     return GestureDetector(
-        onLongPressStart: (detail) => _handleLongPressStart(),
-        onLongPressEnd: (detail) => _handleLongPressEnd(),
-        child: Listener(
-          onPointerMove: (details) {
-            if (details.position.dy > top && details.position.dy < bottom) {
-              if (details.position.dx > 20 && details.position.dx < 86) {
-                if (_selectedButton != 1) {
-                  setState(() => _selectedButton = 1);
-                  overlayEntry!.markNeedsBuild();
-                }
-              } else if (details.position.dx > (width - 86) &&
-                  details.position.dx < width - 20) {
-                if (_selectedButton != 2) {
-                  setState(() => _selectedButton = 2);
-                  overlayEntry!.markNeedsBuild();
-                }
-              } else if (_selectedButton != 0) {
-                setState(() => _selectedButton = 0);
+      onLongPressStart: (detail) => _handleLongPressStart(),
+      onLongPressEnd: (detail) => _handleLongPressEnd(),
+      child: Listener(
+        onPointerMove: (details) {
+          if (details.position.dy > top && details.position.dy < bottom) {
+            if (details.position.dx > 20 && details.position.dx < 86) {
+              if (_selectedButton != 1) {
+                setState(() => _selectedButton = 1);
                 overlayEntry!.markNeedsBuild();
               }
+            } else if (details.position.dx > (width - 86) &&
+                details.position.dx < width - 20) {
+              if (_selectedButton != 2) {
+                setState(() => _selectedButton = 2);
+                overlayEntry!.markNeedsBuild();
+              }
+            } else if (_selectedButton != 0) {
+              setState(() => _selectedButton = 0);
+              overlayEntry!.markNeedsBuild();
             }
-          },
-          child: Container(
-            height: 36,
-            alignment: Alignment.center,
-            child: const Text("Hold to talk"),
-          ),
-        ));
+          }
+        },
+        child: Container(
+          height: 36,
+          alignment: Alignment.center,
+          child: const Text("Hold to talk"),
+        ),
+      ),
+    );
   }
 }

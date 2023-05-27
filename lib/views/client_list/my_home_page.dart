@@ -111,12 +111,12 @@ class _MyHomeViewState extends State<MyHomeView> {
   Widget _getClientList() {
     var selectedItems = context.watch<HomeStateManagement>().selectedItems;
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          context.push(RoutePaths.amap);
-        },
-        child: const Icon(Icons.map),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: (){
+      //     // context.push(RoutePaths.amap);
+      //   },
+      //   child: const Icon(Icons.map),
+      // ),
       appBar: AppBar(
         leadingWidth: kToolbarHeight + 14,
         leading: Container(

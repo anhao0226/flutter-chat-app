@@ -5,7 +5,7 @@ import 'package:flutter_chat_app/providers/chat_provider.dart';
 import 'package:flutter_chat_app/providers/multiple_select_notifier.dart';
 import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/views/chat_dialog/input_bar_components/chat_actions_component.dart';
-import 'package:flutter_chat_app/views/chat_dialog/input_bar_components/chat_record_component.dart';
+import 'package:flutter_chat_app/views/chat_dialog/input_bar_components/actions/record/chat_record_component.dart';
 import 'package:flutter_chat_app/views/animations/size_animation_wrap.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -182,6 +182,9 @@ class _InputBarComponentState extends State<InputBarComponent> {
           widget.onSend(filepath, MessageType.picture, extend),
       onSendFile: (filepath, extend) =>
           widget.onSend(filepath, MessageType.file, extend),
+      onSendLocation: (value, Map<String, dynamic> extend) {
+        widget.onSend("", MessageType.location, extend);
+      },
     );
     return component;
   }

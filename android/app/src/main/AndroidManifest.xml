@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.desktop_app">
+    package="com.example.flutter_chat_app">
 
     <!-- 访问电话状态 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -50,7 +50,7 @@
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:label="desktop_app"
+        android:label="flutter_chat_app"
         android:usesCleartextTraffic="true">
         <service android:name="com.amap.api.location.APSService"/>
         <activity

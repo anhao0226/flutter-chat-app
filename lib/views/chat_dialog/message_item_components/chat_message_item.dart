@@ -1,4 +1,5 @@
-import 'package:file_picker/file_picker.dart';
+import 'package:amap_flutter_base/amap_flutter_base.dart';
+import 'package:flutter_chat_app/database/chat_db_utils.dart';
 import 'package:flutter_chat_app/models/ws_client_model.dart';
 import 'package:flutter_chat_app/models/ws_message_model.dart';
 import 'package:flutter_chat_app/providers/chat_provider.dart';
@@ -20,6 +21,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
+import '../input_bar_components/actions/location/location_message_card.dart';
 import 'text_component.dart';
 import 'picture_component.dart';
 import 'voice_component.dart';
@@ -107,6 +109,16 @@ class _ChatMessageItemState extends State<ChatMessageItem>
           theme: widget.isSelf ? ChatTheme.right : ChatTheme.left,
           onLongPress: _handleItemLongPress,
         );
+      case MessageType.location:
+        logger.i(widget.message.extend);
+        var extend = widget.message.extend!;
+        var latLng = LatLng(extend["latitude"]!, extend["longitude"]!);
+        return ShapeWrapComponent(
+          onLongPress: _handleItemLongPress,
+          theme: widget.isSelf ? ChatTheme.right : ChatTheme.left,
+          onTap: () => context.push(RoutePaths.selectLocation, extra: latLng),
+          child: AmapMessageCard(latLng: latLng),
+        );
       default:
         return Container();
     }
@@ -158,12 +170,12 @@ class _ChatMessageItemState extends State<ChatMessageItem>
       widget.message.status = status;
       setState(() => _status = status);
     }
-    // update database status
-    // ChatRecordDbUtil.update(
-    //   where: "id = ?",
-    //   whereArgs: [widget.message.id],
-    //   values: {"status": status.value},
-    // );
+
+    ChatDatabase.update(
+      where: "id = ?",
+      whereArgs: [widget.message.id],
+      values: {"status": status.value},
+    );
   }
 
   void _deleteRecords() async {
