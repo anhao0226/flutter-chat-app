@@ -29,18 +29,20 @@ class _ChatDialogViewState extends State<ChatDialogView>
   final InputBarController _inputBarController = InputBarController();
   double _bottomPadding = 0;
 
+  late ChatProvider _provider;
+
   @override
   void initState() {
     super.initState();
+    _provider = context.read<ChatProvider>();
     WidgetsBinding.instance.addObserver(this);
-    context.read<ChatProvider>().onNewMessage(() {
-      _scrollToBottom();
-    });
+    _provider.onNewMessage(() => _scrollToBottom());
+
     // add scroll listener
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.minScrollExtent) {
-        context.read<ChatProvider>().handleMoreData();
+        _provider.handleMoreData();
       }
     });
     //
@@ -75,17 +77,9 @@ class _ChatDialogViewState extends State<ChatDialogView>
   }
 
   void _handleSendMessage(
-    String text,
-    MessageType type,
-    Map<String, dynamic>? extend,
-  ) {
-
-    logger.i(extend);
-
+      String text, MessageType type, Map<String, dynamic>? extend) {
     if (type == MessageType.picture) Navigator.pop(context);
-    context
-        .read<ChatProvider>()
-        .sendMessage(text: text, type: type, extend: extend);
+    _provider.sendMessage(text: text, type: type, extend: extend);
   }
 
   void _scrollToBottom() {

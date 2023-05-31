@@ -13,6 +13,31 @@ class ClientDetailsView extends StatelessWidget {
 
   final WSClient client;
 
+  void _showDeleteDialog(BuildContext context) async {
+    var result = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Delete the client?"),
+          actions: [
+            TextButton(
+              onPressed: () => context.pop(false),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () => context.pop(true),
+              child: const Text("Ok"),
+            )
+          ],
+        );
+      },
+    );
+    if (result! && context.mounted) {
+      WSClientManagement.instance.removeItem(client);
+      context.pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,10 +90,7 @@ class ClientDetailsView extends StatelessWidget {
               margin: const EdgeInsets.only(top: 16),
               color: Colors.white,
               child: TextButton(
-                onPressed: () {
-                  WSClientManagement.instance.removeItem(client);
-                  context.pop();
-                },
+                onPressed: () => _showDeleteDialog(context),
                 child: const Text("Delete client"),
               ),
             ),

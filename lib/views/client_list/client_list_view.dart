@@ -43,22 +43,6 @@ class _ClientListViewState extends State<ClientListView>
     } else {
       WSClientManagement.instance.enterChatStatus(client);
       context.push(RoutePaths.clientChatting, extra: client);
-      //
-      // var settings = MyRouteObserver.instance.currSetting!;
-      // var arguments = settings.arguments is WSClient
-      //     ? settings.arguments as WSClient
-      //     : null;
-      // if (settings.name != RouteName.chatDialogPage ||
-      //     (arguments != null && arguments.uid != client.uid)) {
-      //   if (MyApp.navigatorKey.currentState!.canPop()) {
-      //     MyApp.navigatorKey.currentState!.pushReplacementNamed(
-      //         RouteName.chatDialogPage,
-      //         arguments: client);
-      //   } else {
-      //     MyApp.navigatorKey.currentState
-      //         ?.pushNamed(RouteName.chatDialogPage, arguments: client);
-      //   }
-      // }
     }
   }
 

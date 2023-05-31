@@ -21,7 +21,8 @@ enum MessageStatus {
   unread(1),
   download(2),
   upload(3),
-  error(4);
+  error(4),
+  send(5);
 
   const MessageStatus(this.value);
 
@@ -95,7 +96,7 @@ class WSMessage {
     sendTime = _toDateTime(json['send_time']);
     timestamp = json['timestamp'];
     if (json["extend"] != null) {
-      if (json["extend"] is String) {
+      if (json["extend"] is String && (json["extend"] as String).isNotEmpty) {
         extend = jsonDecode(json["extend"]);
       } else if (json["extend"] is Map) {
         extend = json["extend"];

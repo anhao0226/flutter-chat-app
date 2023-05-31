@@ -1,36 +1,64 @@
-import 'package:amap_flutter_base/amap_flutter_base.dart';
-import 'package:amap_flutter_map/amap_flutter_map.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_chat_app/router/router.dart';
-import 'package:flutter_chat_app/views/chat_dialog/message_item_components/shap_component.dart';
-import 'package:flutter_chat_app/views/client_list/amap.dart';
-import 'package:go_router/go_router.dart';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/models/ws_message_model.dart';
+import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/utils/network_image.dart';
 
 class AmapMessageCard extends StatelessWidget {
-  const AmapMessageCard({super.key, required this.latLng});
+  const AmapMessageCard({
+    super.key,
+    this.onTap,
+    this.onLongPress,
+    required this.message,
+  });
 
-  final LatLng latLng;
+  final VoidCallback? onTap;
+
+  final VoidCallback? onLongPress;
+
+  final WSMessage message;
 
   @override
   Widget build(BuildContext context) {
-    const AMapPrivacyStatement amapPrivacyStatement =
-        AMapPrivacyStatement(hasContains: true, hasShow: true, hasAgree: true);
+    logger.i(message.toSaveMap());
+    var address = message.extend!['address'];
+    var filepath = message.extend!['snapshot'];
 
-    final AMapWidget mapWidget = AMapWidget(
-      initialCameraPosition: CameraPosition(target: latLng, zoom: 16),
-      privacyStatement: amapPrivacyStatement,
-      apiKey: const AMapApiKey(
-        iosKey: AMapView.iosKey,
-        androidKey: AMapView.androidKey,
+    return Flexible(
+      fit: FlexFit.tight,
+      child: InkWell(
+        onTap: onTap,
+        onLongPress: onLongPress,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(6.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                color: Colors.white,
+                child: Text(
+                  address,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              SizedBox(
+                height: 100,
+                child: Image(
+                  fit: BoxFit.fitWidth,
+                  image: CustomNetworkImage(
+                    message.text,
+                    File(filepath),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
-      markers: <Marker>{Marker(position: latLng)},
-      onMapCreated: (AMapController controller) {},
-      onTap: (value) => context.push(RoutePaths.selectLocation),
-    );
-
-    return SizedBox(
-      height: 100,
-      child: mapWidget,
     );
   }
 }

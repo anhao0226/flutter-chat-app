@@ -17,7 +17,7 @@ import '../database/database.dart';
 
 class Initialization {
   static String? _host;
-  static String? _port;
+  static int? _port;
   static WSClient? _client;
   static late Directory _voiceSaveDir;
   static late Directory _pictureSaveDir;
@@ -29,7 +29,7 @@ class Initialization {
 
   static String? get address => [_host, _port].join(":");
 
-  static String? get port => _port;
+  static int? get port => _port;
 
   static String? get host => _host;
 
@@ -50,17 +50,15 @@ class Initialization {
 
   static Directory get unknownFileDir => _unknownFileDir;
 
-
   static Future<void> init() async {
     WidgetsFlutterBinding.ensureInitialized();
     _prefs = await SharedPreferences.getInstance();
-
     // _prefs.clear();
     //
     _initSeverSetting();
     //
     localClientCache();
-    //
+
     _temporaryDir = await getTemporaryDirectory();
     _appDocumentsDir = await getApplicationDocumentsDirectory();
     _voiceSaveDir = Directory("${_appDocumentsDir.path}/voices");
@@ -82,7 +80,6 @@ class Initialization {
     if (!await _unknownFileDir.exists()) {
       _unknownFileDir.create(recursive: true);
     }
-
 
     // Init database
     var databasesPath = await getDatabasesPath();
@@ -117,32 +114,14 @@ class Initialization {
     }
   }
 
-  static void writeHost(String host) {
+  static void writeServerConfig(String host, int port) {
     _prefs.setString("_HOST", _host = host);
-  }
-
-  static void writePort(String port) {
-    _prefs.setString("_POST", _port = port);
+    _prefs.setInt("_POST", _port = port);
   }
 
   static void _initSeverSetting() {
     _host = _prefs.getString("_HOST");
-    _port = _prefs.getString("_POST");
-  }
-
-  static Uri? websocketConnUrl() {
-    if (_client == null) return null;
-    return Uri(
-      path: "/ws",
-      scheme: "ws",
-      host: _host,
-      port: int.parse(_port!),
-      queryParameters: {
-        "uid": _client!.uid,
-        "nickname": _client!.nickname,
-        "avatarUrl": _client!.avatarUrl,
-      },
-    );
+    _port = _prefs.getInt("_POST") ?? 8080;
   }
 
   static bool isValidConfig() {

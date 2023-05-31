@@ -6,6 +6,7 @@ import 'package:flutter_chat_app/utils/initialization.dart';
 import 'package:flutter_chat_app/router/router.dart';
 import 'package:flutter_chat_app/utils/websocket.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class StatusBarComponent extends StatefulWidget {
   const StatusBarComponent({
@@ -33,30 +34,42 @@ class _StatusBarComponentState extends State<StatusBarComponent> {
 
   void _handleWsReconnect() {
     setState(() => _isReconnecting = true);
-    var url = Initialization.websocketConnUrl().toString();
-    WSUtil.instance.initWebSocket(url).catchError((err) {
+    WSUtil.instance
+        .initWebSocket(
+      port: Initialization.port!,
+      host: Initialization.host!,
+      client: Initialization.client!,
+    )
+        .then((value) {
+      logger.i(value);
+    }).catchError((err) {
       setState(() => _isReconnecting = false);
       _showErrorDialog(err);
     });
   }
 
-  void _showErrorDialog(Object err) {
-    showDialog(
+  void _showErrorDialog(Object err) async {
+    var result = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
           content: Text(err.toString()),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, RoutePaths.init);
-              },
+              onPressed: () => context.pop(false),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () => context.pop(true),
               child: const Text("Setting"),
             )
           ],
         );
       },
     );
+    if (mounted && result!) {
+      context.push(RoutePaths.connectionSettings);
+    }
   }
 
   @override

@@ -1,4 +1,8 @@
 import 'package:animations/animations.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:flutter_chat_app/models/ws_client_model.dart';
 import 'package:flutter_chat_app/utils/dio_instance.dart';
 import 'package:flutter_chat_app/utils/index.dart';
@@ -6,11 +10,8 @@ import 'package:flutter_chat_app/utils/initialization.dart';
 import 'package:flutter_chat_app/router/router.dart';
 import 'package:flutter_chat_app/utils/websocket.dart';
 import 'package:flutter_chat_app/views/common_components/wrapper.dart';
-import 'package:flutter_chat_app/views/settings/select_avator_view.dart';
-import 'package:flutter_chat_app/views/settings/set_connection_info_view.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_chat_app/views/settings/picker_avator_view.dart';
+import 'package:flutter_chat_app/views/settings/connection_setting_view.dart';
 
 class InitClientInfoView extends StatefulWidget {
   const InitClientInfoView({super.key});
@@ -23,57 +24,43 @@ class InitClientInfoView extends StatefulWidget {
 
 class _InitClientInfoViewState extends State<InitClientInfoView> {
   bool _isLoggedIn = false;
-  String? _host;
-  String? _port;
-  String? _nickname;
+  late String _host;
+  late String _nickname;
+  late int _port;
   bool _isLoading = false;
 
   List<ServerIconData> _icons = [];
 
-  void _toggleLoginStatus() {
-    setState(() {
-      _isLoggedIn = !_isLoggedIn;
-    });
-  }
-
   void _handleSubmit(String avatarUrl) {
+    logger.i(avatarUrl);
     var clientId = uuid.v4();
-
-    var queryParameters = <String, dynamic>{};
-    queryParameters['uid'] = clientId;
-    queryParameters['nickname'] = _nickname;
-    queryParameters['avatarUrl'] = avatarUrl;
-    //
-    var uri = Uri(
-      path: "/ws",
-      host: _host,
-      port: int.parse(_port!),
-      scheme: "ws",
-      queryParameters: queryParameters,
-    );
-    //
+    var wsClient =
+        WSClient(uid: clientId, nickname: _nickname, avatarUrl: avatarUrl);
     setState(() => _isLoading = true);
-    WSUtil.instance.initWebSocket(uri.toString()).then((value) {
+    WSUtil.instance
+        .initWebSocket(port: _port, host: _host, client: wsClient)
+        .then((value) {
       setState(() => _isLoading = false);
-
-      var client =
-          WSClient(uid: clientId, nickname: _nickname!, avatarUrl: avatarUrl);
-      //
-      Initialization.writeHost(_host!);
-      Initialization.writePort(_port!);
-      Initialization.writeClientCache(client);
+      Initialization.writeServerConfig(_host, _port);
+      Initialization.writeClientCache(wsClient);
       dioInstance = Dio(BaseOptions(baseUrl: "http://$_host:$_port"));
       context.pushReplacement(RoutePaths.home);
     }).catchError((err) {
       setState(() => _isLoading = false);
-      // _showErrorDialog(err);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          showCloseIcon: true,
+          duration: const Duration(seconds: 10),
+          content: Text(err.toString()),
+        ),
+      );
     });
   }
 
-  void _handleNext(String nickname, String host, String port) {
+  void _handleNext(String nickname, String host, int port) {
     setState(() => _isLoading = true);
     FocusScope.of(context).unfocus();
-    var uri = Uri(scheme: "http", host: host, port: int.parse(port));
+    var uri = Uri(scheme: "http", host: host, port: port);
     var instance = Dio(BaseOptions(baseUrl: uri.toString()));
     fetchIcons(instance: instance).then((value) {
       setState(() => _isLoading = false);
@@ -88,15 +75,9 @@ class _InitClientInfoViewState extends State<InitClientInfoView> {
       logger.e(err is DioError);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          duration: const Duration(seconds: 3),
+          showCloseIcon: true,
+          duration: const Duration(seconds: 10),
           content: Text(err.toString()),
-          action: SnackBarAction(
-            label: "Close",
-            textColor: Colors.white,
-            onPressed: () {
-              ScaffoldMessenger.of(context).clearSnackBars();
-            },
-          ),
         ),
       );
       setState(() => _isLoading = false);
@@ -108,7 +89,6 @@ class _InitClientInfoViewState extends State<InitClientInfoView> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       extendBodyBehindAppBar: true,
-      // appBar: AppBar(title: const Text('Shared axis')),
       body: Wrapper(
         bdColor: const Color.fromRGBO(0, 0, 0, 0.2),
         isLoading: _isLoading,
@@ -133,14 +113,15 @@ class _InitClientInfoViewState extends State<InitClientInfoView> {
                   child: _isLoggedIn
                       ? PickerAvatarView(
                           icons: _icons,
-                          onNext: (String avatarUrl) {
-                            _handleSubmit(avatarUrl);
-                          },
+                          onNext: _handleSubmit,
                           onBack: () {
                             setState(() => _isLoggedIn = !_isLoggedIn);
                           },
                         )
-                      : SetConnectionInfoView(onNext: _handleNext),
+                      : ConnectionSettingsView(
+                          onNext: _handleNext,
+                          initStep: true,
+                        ),
                 ),
               ),
             ],

@@ -1,4 +1,13 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
+
+import 'package:flutter_chat_app/api/message.dart';
 import 'package:flutter_chat_app/database/chat_db_utils.dart';
 import 'package:flutter_chat_app/models/ws_client_model.dart';
 import 'package:flutter_chat_app/models/ws_message_model.dart';
@@ -13,13 +22,6 @@ import 'package:flutter_chat_app/views/chat_dialog/message_item_components/file_
 import 'package:flutter_chat_app/views/chat_dialog/message_item_components/shap_component.dart';
 import 'package:flutter_chat_app/views/chat_dialog/theme.dart';
 import 'package:flutter_chat_app/views/client_list/avatar_component.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 
 import '../input_bar_components/actions/location/location_message_card.dart';
 import 'text_component.dart';
@@ -42,17 +44,20 @@ class ChatMessageItem extends StatefulWidget {
 
 class _ChatMessageItemState extends State<ChatMessageItem>
     with AutomaticKeepAliveClientMixin {
-  final CancelToken _cancelToken = CancelToken();
   MessageStatus _status = MessageStatus.normal;
   CrossFadeState _avatarState = CrossFadeState.showFirst;
   List<ActionType> _sharedActions = [];
 
+  final CancelToken _cancelToken = CancelToken();
+
   @override
   void initState() {
     super.initState();
+    logger.i(_status);
     _status = widget.message.status;
-    if (_status == MessageStatus.upload) {
-      _handleUploadFile();
+    if (_status == MessageStatus.send) {
+      logger.i(_status);
+      _handleSendMessage();
     } else if (_status == MessageStatus.download) {
       if (widget.message.type == MessageType.voice) {
         _handleDownloadFile();
@@ -64,6 +69,29 @@ class _ChatMessageItemState extends State<ChatMessageItem>
   void dispose() {
     _cancelToken.cancel();
     super.dispose();
+  }
+
+  void _handleSendMessage() {
+    logger.i(widget.message.toSaveMap());
+    handleSendMessage(
+      text: widget.message.text,
+      sender: widget.message.sender,
+      msgType: widget.message.type,
+      extend: widget.message.extend,
+      receivers: [widget.message.receiver],
+      cancelToken: _cancelToken,
+    ).then((value) {
+      if (value.success &&
+          value.data.containsKey(widget.message.receiver) &&
+          value.data[widget.message.receiver] == null) {
+        _changeStatus(MessageStatus.normal);
+      } else {
+        _changeStatus(MessageStatus.error);
+      }
+    }).catchError((err) {
+      logger.i(err);
+      _changeStatus(MessageStatus.error);
+    });
   }
 
   Widget _getMessageUI() {
@@ -110,14 +138,15 @@ class _ChatMessageItemState extends State<ChatMessageItem>
           onLongPress: _handleItemLongPress,
         );
       case MessageType.location:
-        logger.i(widget.message.extend);
         var extend = widget.message.extend!;
         var latLng = LatLng(extend["latitude"]!, extend["longitude"]!);
-        return ShapeWrapComponent(
+        return AmapMessageCard(
+          message: widget.message,
+          onTap: () => context.push(
+            RoutePaths.selectLocation,
+            extra: <String, dynamic>{"latLng": latLng},
+          ),
           onLongPress: _handleItemLongPress,
-          theme: widget.isSelf ? ChatTheme.right : ChatTheme.left,
-          onTap: () => context.push(RoutePaths.selectLocation, extra: latLng),
-          child: AmapMessageCard(latLng: latLng),
         );
       default:
         return Container();
@@ -139,38 +168,10 @@ class _ChatMessageItemState extends State<ChatMessageItem>
     }).catchError((err) {});
   }
 
-  // upload file
-  void _handleUploadFile() {
-    handleUploadFile(
-      widget.message.sender,
-      [widget.message.receiver],
-      widget.message.filepath!,
-      widget.message.type.value,
-      extend: widget.message.extend,
-      cancelToken: _cancelToken,
-    ).then((value) {
-      logger.i('data => ${value.data}');
-      if (value.code == 200 &&
-          value.success &&
-          value.data.containsKey(widget.message.receiver) &&
-          value.data[widget.message.receiver] == null) {
-        _changeStatus(MessageStatus.normal);
-      } else {
-        _changeStatus(MessageStatus.error);
-      }
-    }).catchError((err) {
-      logger.e(err);
-      _changeStatus(MessageStatus.error);
-    });
-  }
-
   void _changeStatus(MessageStatus status) {
-    //
-    if (!_cancelToken.isCancelled) {
-      widget.message.status = status;
-      setState(() => _status = status);
-    }
-
+    widget.message.status = status;
+    if (!_cancelToken.isCancelled) setState(() => _status = status);
+    // 更新数据库状态
     ChatDatabase.update(
       where: "id = ?",
       whereArgs: [widget.message.id],
@@ -198,17 +199,11 @@ class _ChatMessageItemState extends State<ChatMessageItem>
     context.push(RoutePaths.clientShared, extra: widget.message).then((value) {
       if (value != null && value as bool) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            duration: const Duration(seconds: 3),
-            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-            content: const Text('Send success'),
-            action: SnackBarAction(
-              label: "Close",
-              textColor: Colors.white,
-              onPressed: () {
-                ScaffoldMessenger.of(context).clearSnackBars();
-              },
-            ),
+          const SnackBar(
+            showCloseIcon: true,
+            duration: Duration(seconds: 3),
+            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+            content: Text('Send success'),
           ),
         );
       }
@@ -266,7 +261,7 @@ class _ChatMessageItemState extends State<ChatMessageItem>
           break;
         case ActionType.send:
           setState(() => _status = MessageStatus.upload);
-          _handleUploadFile();
+          _handleSendMessage();
           break;
         case ActionType.copy:
           Clipboard.setData(ClipboardData(text: widget.message.text));

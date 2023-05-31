@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter_chat_app/router/router.dart';
 import 'package:flutter_chat_app/utils/index.dart';
+import 'package:flutter_chat_app/views/chat_dialog/input_bar_components/actions/location/location_select_view.dart';
 import 'package:flutter_chat_app/views/chat_dialog/take_picture_view.dart';
 import 'package:flutter_chat_app/views/image_view.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +73,10 @@ class _ChatActionsComponentState extends State<ChatActionsComponent> {
   }
 
   void _handleSendLocation() {
-    context.push(RoutePaths.selectLocation).then((value) {
+    context.push(
+      RoutePaths.selectLocation,
+      extra: <String, dynamic>{"mapState": MapState.select},
+    ).then((value) {
       if (value != null) {
         widget.onSendLocation("", value as Map<String, dynamic>);
       }

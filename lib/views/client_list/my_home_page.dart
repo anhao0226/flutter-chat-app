@@ -1,8 +1,3 @@
-import 'package:flutter_chat_app/providers/ws_client_management.dart';
-import 'package:flutter_chat_app/utils/initialization.dart';
-import 'package:flutter_chat_app/views/client_list/avatar_component.dart';
-import 'package:flutter_chat_app/views/client_list/status_bar.dart';
-import 'package:flutter_chat_app/views/common_components/wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
@@ -14,6 +9,11 @@ import '../../utils/iconfont.dart';
 import '../../router/router.dart';
 import '../../utils/websocket.dart';
 import 'client_list_view.dart';
+import 'package:flutter_chat_app/providers/ws_client_management.dart';
+import 'package:flutter_chat_app/utils/initialization.dart';
+import 'package:flutter_chat_app/views/client_list/avatar_component.dart';
+import 'package:flutter_chat_app/views/client_list/status_bar.dart';
+import 'package:flutter_chat_app/views/common_components/wrapper.dart';
 
 enum Segment { message, online }
 
@@ -111,12 +111,6 @@ class _MyHomeViewState extends State<MyHomeView> {
   Widget _getClientList() {
     var selectedItems = context.watch<HomeStateManagement>().selectedItems;
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: (){
-      //     // context.push(RoutePaths.amap);
-      //   },
-      //   child: const Icon(Icons.map),
-      // ),
       appBar: AppBar(
         leadingWidth: kToolbarHeight + 14,
         leading: Container(
@@ -187,7 +181,7 @@ class _MyHomeViewState extends State<MyHomeView> {
           const SizedBox(width: 10)
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(76.0),
+          preferredSize: const Size.fromHeight(76),
           child: Container(
             height: 76.0,
             alignment: Alignment.center,
@@ -202,20 +196,24 @@ class _MyHomeViewState extends State<MyHomeView> {
       ),
       body: Wrapper(
         isLoading: false,
-        stack: [
-          ValueListenableBuilder(
-            valueListenable: WSUtil.instance.connectivity,
-            builder: (context, value, child) {
-              return StatusBarComponent(isOpen: value);
-            },
-          ),
-        ],
-        child: PageView(
-          controller: _pageController,
-          onPageChanged: _onPageChanged,
-          children: const [
-            ClientListView(segment: Segment.message),
-            ClientListView(segment: Segment.online),
+        child: Column(
+          children: [
+            ValueListenableBuilder(
+              valueListenable: WSUtil.instance.connectivity,
+              builder: (context, value, child) {
+                return StatusBarComponent(isOpen: value);
+              },
+            ),
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: _onPageChanged,
+                children: const [
+                  ClientListView(segment: Segment.message),
+                  ClientListView(segment: Segment.online),
+                ],
+              ),
+            ),
           ],
         ),
       ),

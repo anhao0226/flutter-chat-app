@@ -47,6 +47,7 @@ class WSClientManagement extends ChangeNotifier {
     }
     HiveUtils.instance.clients.delete(client.uid);
     // clear chat data
+
     notifyListeners();
   }
 

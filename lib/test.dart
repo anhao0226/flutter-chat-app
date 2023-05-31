@@ -1,35 +1,36 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:dio/dio.dart';
 
-class Global {
-  static int _id = 0;
+late Dio dioInstance;
 
-  static int get id => _id;
-
-  static void doCount() {
-    _id++;
-  }
+void initDio() {
+  dioInstance = Dio(
+    BaseOptions(
+      queryParameters: {
+        "key": "PPPPPPPPPPPPPPPPPP"
+      }
+    )
+  );
+  dioInstance.interceptors.add(
+    InterceptorsWrapper(onRequest: (options, handler) {
+      print('');
+      print(options.path);
+      print(options.queryParameters);
+      return handler.resolve(
+        Response(requestOptions: options, data: 'fake data'),
+      );
+    }),
+  );
 }
 
-class P extends ChangeNotifier {
-  int get count => Global.id;
+void _fetchResult() async {
+  var res = await dioInstance.get(
+    "/test",
+    queryParameters: {"A": "BBB"},
+  );
+  print(res);
 }
 
-class TestPage extends StatelessWidget {
-  const TestPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          Global.doCount();
-        },
-      ),
-      body: Center(
-        child: Text(context.read<P>().count.toString()),
-      ),
-    );
-  }
+void main() {
+  initDio();
+  _fetchResult();
 }

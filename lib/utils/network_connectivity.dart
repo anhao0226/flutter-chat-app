@@ -1,4 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/utils/websocket.dart';
 
 import 'initialization.dart';
@@ -15,8 +17,17 @@ void watchNetworkConnectivity() {
       case ConnectivityResult.other:
         // 初始化Websocket服务
         if (Initialization.isValidConfig()) {
-          var wsUrl = Initialization.websocketConnUrl();
-          WSUtil.instance.initWebSocket(wsUrl.toString()).then((value) {});
+          WSUtil.instance
+              .initWebSocket(
+            host: Initialization.host!,
+            port: Initialization.port!,
+            client: Initialization.client!,
+          )
+              .then((value) {
+            logger.i(value);
+          }).catchError((err) {
+            logger.i(err);
+          });
         }
         break;
       case ConnectivityResult.none:

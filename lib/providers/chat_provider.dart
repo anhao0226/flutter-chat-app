@@ -110,9 +110,9 @@ class ChatProvider extends ChangeNotifier {
     required MessageType type,
     Map<String, dynamic>? extend,
   }) async {
-    var message =
-        await WSUtil.instance.messageWrap(text, _wsClient.uid, type, extend);
-    logger.i(message.text);
+    var cid = _wsClient.uid;
+    var message = await WSUtil.instance.messageWrap(text, cid, type, extend);
+    logger.i(message);
     messages.add(message);
     notifyListeners();
     if (_onNewMessage != null) _onNewMessage!();

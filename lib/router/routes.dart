@@ -3,7 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_chat_app/router/router.dart';
 import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/views/chat_dialog/input_bar_components/actions/location/location_select_view.dart';
-import 'package:flutter_chat_app/views/client_list/amap.dart';
+import 'package:flutter_chat_app/views/common_components/amap.dart';
+import 'package:flutter_chat_app/views/settings/connection_setting_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -63,6 +64,10 @@ final routes = <GoRoute>[
     builder: (context, state) => const ManageLocalCacheView(),
   ),
   GoRouteWrap(
+    path: RoutePaths.connectionSettings,
+    builder: (context, state) => const ConnectionSettingsView(),
+  ),
+  GoRouteWrap(
     path: RoutePaths.clientDetails,
     builder: (context, state) {
       var client = state.extra as WSClient;
@@ -106,10 +111,14 @@ final routes = <GoRoute>[
   ),
   GoRouteWrap(
     path: RoutePaths.selectLocation,
-    builder: (context, state){
-      var latLng = state.extra ?? const LatLng(39.909187, 116.397451);
-      logger.i(latLng);
-      return SelectLocationView(initLatLng: latLng as LatLng);
+    builder: (context, state) {
+      var extra = state.extra as Map<String, dynamic>;
+      var mapState = extra["mapState"] ?? MapState.show;
+      var latLng = extra["latLng"] ?? const LatLng(39.909187, 116.397451);
+      return SelectLocationView(
+        initLatLng: latLng as LatLng,
+        mapState: mapState as MapState,
+      );
     },
   ),
 ];

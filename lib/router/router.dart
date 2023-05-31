@@ -7,25 +7,16 @@ class RoutePaths {
   RoutePaths._();
 
   static const String home = "/";
-
   static const String settings = "/settings";
-
+  static const String connectionSettings = "/settings/connection";
   static const String permissionSettings = "/settings/permission";
-
   static const String cacheManagement = "/settings/cache";
-
   static const String clientDetails = "/client/details";
-
   static const String clientChatting = "/client/chatting";
-
   static const String clientChatSettings = "/client/chat/setting";
-
   static const String clientShared = "/client/shared";
-
   static const String imagePreview = "/image/preview";
-
   static const String init = "/init";
-
   static const String selectLocation = "/select_location";
 }
 

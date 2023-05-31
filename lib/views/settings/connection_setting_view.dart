@@ -1,25 +1,30 @@
-import 'dart:io';
-
+import 'package:flutter_chat_app/color_schemes.dart';
 import 'package:flutter_chat_app/models/ws_client_model.dart';
-import 'package:flutter_chat_app/utils/index.dart';
 import 'package:flutter_chat_app/utils/initialization.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/utils/websocket.dart';
+import 'package:go_router/go_router.dart';
 
 import '../client_list/avatar_component.dart';
 
-typedef NextCallback = void Function(String nickname, String host, String port);
+typedef NextCallback = void Function(String nickname, String host, int port);
 
-class SetConnectionInfoView extends StatefulWidget {
-  const SetConnectionInfoView({super.key, required this.onNext});
+class ConnectionSettingsView extends StatefulWidget {
+  const ConnectionSettingsView({
+    super.key,
+    this.onNext,
+    this.initStep = false,
+  });
 
-  final NextCallback onNext;
+  final NextCallback? onNext;
+
+  final bool initStep;
 
   @override
-  State<StatefulWidget> createState() => _SetConnectionInfoViewState();
+  State<StatefulWidget> createState() => _ConnectionSettingsViewState();
 }
 
-class _SetConnectionInfoViewState extends State<SetConnectionInfoView> {
+class _ConnectionSettingsViewState extends State<ConnectionSettingsView> {
   final TextEditingController _hostEditingController = TextEditingController();
   final TextEditingController _nicknameEditingController =
       TextEditingController();
@@ -36,7 +41,7 @@ class _SetConnectionInfoViewState extends State<SetConnectionInfoView> {
     }
     if (Initialization.port != null) {
       _portEditingController.value =
-          TextEditingValue(text: Initialization.port!);
+          TextEditingValue(text: Initialization.port!.toString());
     }
 
     if (Initialization.client != null) {
@@ -50,12 +55,34 @@ class _SetConnectionInfoViewState extends State<SetConnectionInfoView> {
     if (_nicknameEditingController.text.isNotEmpty &&
         _hostEditingController.text.isNotEmpty &&
         _portEditingController.text.isNotEmpty) {
-      widget.onNext(
+      widget.onNext!(
         _nicknameEditingController.text,
         _hostEditingController.text,
-        _portEditingController.text,
+        int.tryParse(_portEditingController.text) ?? 8080,
       );
     }
+  }
+
+  void _handleWsConnection() {
+    var host = _hostEditingController.text;
+    var port = int.tryParse(_portEditingController.text) ?? 8080;
+    WSUtil.instance
+        .initWebSocket(
+      host: host,
+      port: port,
+      client: Initialization.client!,
+    )
+        .then((value) {
+      // update cache
+      Initialization.writeServerConfig(host, port);
+      context.pop();
+    }).catchError((err) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Container(),
+        ),
+      );
+    });
   }
 
   @override
@@ -63,10 +90,12 @@ class _SetConnectionInfoViewState extends State<SetConnectionInfoView> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          TextButton(
-            onPressed: _handleNext,
-            child: const Text("Next"),
-          )
+          widget.initStep
+              ? TextButton(
+                  onPressed: _handleNext,
+                  child: const Text("Next"),
+                )
+              : Container()
         ],
       ),
       body: SingleChildScrollView(
@@ -93,9 +122,21 @@ class _SetConnectionInfoViewState extends State<SetConnectionInfoView> {
                 ),
                 _buildInputBox(
                   label: "Port",
-                  hintText: Initialization.port,
+                  hintText: Initialization.port.toString(),
                   controller: _portEditingController,
                 ),
+                const SizedBox(height: 30.0),
+                widget.initStep
+                    ? Container()
+                    : ElevatedButton(
+                        onPressed: _handleWsConnection,
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor: lightColorScheme.primary,
+                          foregroundColor: lightColorScheme.onPrimary,
+                        ),
+                        child: const Text("Connect"),
+                      )
               ],
             ),
           ),
